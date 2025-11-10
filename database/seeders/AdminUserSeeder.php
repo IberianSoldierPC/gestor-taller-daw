@@ -1,7 +1,5 @@
 <?php
 
-// database/seeders/AdminUserSeeder.php
-
 namespace Database\Seeders;
 
 use App\Models\User;
@@ -10,9 +8,14 @@ use Illuminate\Support\Facades\Hash;
 
 class AdminUserSeeder extends Seeder
 {
+    /**
+     * Crea un usuario Administrador y un usuario Empleado de prueba.
+     *
+     * @return void
+     */
     public function run()
     {
-        // Esto evita duplicados y asegura que el usuario Admin exista.
+        // 1. Usuario Administrador (Puede ver todos los proyectos)
         User::updateOrCreate(
             ['email' => 'admin@taller.test'],
             [
@@ -22,5 +25,17 @@ class AdminUserSeeder extends Seeder
                 'email_verified_at' => now(),
             ]
         );
+        // 2. Usuario Empleado (Solo verá proyectos asignados a él)
+        User::updateOrCreate(
+            ['email'=> 'empleado@taller.test'],
+            [
+                'name' => 'Empleado Juan',
+                'password' => Hash::make('password'),
+                'role' => 'employee',
+                'email_verified_at' => now(),
+            ]
+        );
+        // 3. Crear 5 usuarios empleados aleatorios adicionales de fábrica
+        User::factory(5)->create(['role' => 'employee']);
     }
 }

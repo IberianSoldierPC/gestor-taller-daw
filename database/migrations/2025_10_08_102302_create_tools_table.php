@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name', 100); 
             $table->text('description')->nullable();
             $table->string('location', 50); 
-            $table->enum('status', ['Operativa', 'Averiada', 'Prestada'])->default('Operativa'); 
+            $table->string('status', 30)->default('Disponible'); 
             $table->date('acquisition_date')->nullable();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); 
             $table->timestamps();
