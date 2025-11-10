@@ -16,6 +16,22 @@
 El objetivo principal es proporcionar una herramienta robusta para asignar trabajos a empleados, gestionar el inventario de herramientas y llevar un control detallado de las instrucciones paso a paso para cada proyecto.
 
 
+# ✨ Características Principales
+
++ **Gestión de Proyectos:** Creación, edición, visualización y eliminación de trabajos o tareas del taller.
+
++ **Roles de Usuario:** Diferenciación entre usuarios Administradores (acceso total, asignación) y Empleados (solo ven sus proyectos asignados).
+
++ **Detalle de Proyectos:**
+
+  + **Materiales:** Listado dinámico de materiales necesarios (nombre, cantidad, notas).
+
+  + **Herramientas:** Asociación Many-to-Many de herramientas requeridas.
+
+  + **Pasos de Construcción:** Guía paso a paso con instrucciones detalladas y soporte para imágenes por cada paso.
+
++ **Control de Estado y Prioridad:** Clasificación de proyectos por pendiente, en_proceso, terminado, etc.
+
 
 # 🚀 Requisitos del Sistema
 
@@ -94,24 +110,7 @@ php artisan serve
 Abre tu navegador y navega a http://localhost:8000.
 
 
-# ✨ Características Principales
 
-+ **Gestión de Proyectos:** Creación, edición, visualización y eliminación de trabajos o tareas del taller.
-
-+ **Roles de Usuario:** Diferenciación entre usuarios Administradores (acceso total, asignación) y Empleados (solo ven sus proyectos asignados).
-
-+ **Detalle de Proyectos:**
-
-  + **Materiales:** Listado dinámico de materiales necesarios (nombre, cantidad, notas).
-
-  + **Herramientas:** Asociación Many-to-Many de herramientas requeridas.
-
-  + **Pasos de Construcción:** Guía paso a paso con instrucciones detalladas y soporte para imágenes por cada paso.
-
-+ **Control de Estado y Prioridad:** Clasificación de proyectos por pendiente, en_proceso, terminado, etc.
-
-  
-
-## 🤝 Colaboración
+## 🤝 ***Colaboración***
 
 Si deseas contribuir o reportar un error, por favor, abre un ***issue*** o envía un ***pull request***.
