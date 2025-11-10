@@ -7,55 +7,102 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## About Laravel
+🛠️ Gestor de Taller DAW
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+¡Bienvenido al repositorio del proyecto Gestor de Taller DAW! Esta es una aplicación web desarrollada con el framework Laravel para la gestión eficiente de proyectos (o trabajos en taller), materiales, herramientas y los pasos de construcción asociados.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+El objetivo principal es proporcionar una herramienta robusta para asignar trabajos a empleados, gestionar el inventario de herramientas y llevar un control detallado de las instrucciones paso a paso para cada proyecto.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+🚀 Requisitos del Sistema
 
-## Learning Laravel
+PHP >= 8.2
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Composer
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Node.js (para la compilación de assets con Vite)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Una base de datos (MySQL, PostgreSQL, SQLite, etc.)
 
-## Laravel Sponsors
+⚙️ Instalación y Configuración
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Sigue estos pasos para poner en marcha el proyecto en tu entorno local.
 
-### Premium Partners
+1. Clonar el Repositorio (Ya hecho)
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+Si aún no lo has hecho, clona el repositorio:
 
-## Contributing
+git clone [https://github.com/IberianSoldierPC/gestor-taller-daw.git](https://github.com/IberianSoldierPC/gestor-taller-daw.git)
+cd gestor-taller-daw
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
 
-## Code of Conduct
+2. Dependencias
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Instala las dependencias de PHP y JavaScript:
 
-## Security Vulnerabilities
+# Instalar dependencias de PHP (Composer)
+composer install
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+# Instalar dependencias de JavaScript (NPM)
+npm install
 
-## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+3. Configuración del Entorno
+
+Copia el archivo de ejemplo para crear tu archivo .env:
+
+cp .env.example .env
+
+
+Genera la clave de aplicación de Laravel:
+
+php artisan key:generate
+
+
+Edita el archivo .env para configurar tu conexión a la base de datos (DB_DATABASE, DB_USERNAME, DB_PASSWORD).
+
+4. Base de Datos y Seeders
+
+Ejecuta las migraciones para crear las tablas de la base de datos y luego ejecuta los seeders para añadir datos iniciales (como el usuario Administrador y algunas herramientas base).
+
+php artisan migrate --seed
+
+
+Nota: El seeder incluye un usuario admin por defecto. Revisa el archivo database/seeders/AdminUserSeeder.php para ver las credenciales.
+
+5. Compilación de Assets
+
+Compila los estilos CSS y JavaScript con Vite.
+
+npm run dev
+# o para producción:
+# npm run build
+
+
+💻 Uso de la Aplicación
+
+Inicia el servidor de desarrollo de Laravel:
+
+php artisan serve
+
+
+Abre tu navegador y navega a http://localhost:8000.
+
+✨ Características Principales
+
+Gestión de Proyectos: Creación, edición, visualización y eliminación de trabajos o tareas del taller.
+
+Roles de Usuario: Diferenciación entre usuarios Administradores (acceso total, asignación) y Empleados (solo ven sus proyectos asignados).
+
+Detalle de Proyectos:
+
+Materiales: Listado dinámico de materiales necesarios (nombre, cantidad, notas).
+
+Herramientas: Asociación Many-to-Many de herramientas requeridas.
+
+Pasos de Construcción: Guía paso a paso con instrucciones detalladas y soporte para imágenes por cada paso.
+
+Control de Estado y Prioridad: Clasificación de proyectos por pendiente, en_proceso, terminado, etc.
+
+🤝 Colaboración
+
+Si deseas contribuir o reportar un error, por favor, abre un issue o envía un pull request.
