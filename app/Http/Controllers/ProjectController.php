@@ -7,40 +7,46 @@ use App\Models\Tool;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class ProjectController extends Controller
 {
     /**
      * Muestra un listado de los recursos (Proyectos).
      */
-    public function index()
+    public function index(): View
     {
         $user = Auth::user();
 
-        // Lógica de roles: Administrador vs. Empleado
+        // Determina qué proyectos mostrar basado en el rol del usuario
         if ($user->role === 'admin') {
-            // El admin ve TODOS los proyectos, cargando la relación 'assignedTo' (el usuario asignado) y 'tools'
+            // El admin ve TODOS los proyectos. Eager loading de relaciones.
             $projects = Project::with('assignedTo', 'tools')->get();
+            $title = 'Todos los Proyectos del Taller';
         } else {
-            // El empleado solo ve los proyectos que le han sido asignados
+            // El empleado solo ve los proyectos que le han sido asignados. Eager loading.
             $projects = Project::where('assigned_to_user_id', $user->id)
                                ->with('assignedTo', 'tools')->get();
+            $title = 'Mis Proyectos Asignados';
         }
 
-        ($user->role === 'admin') ? 'Todos los Proyectos del Taller' : 'Mis Proyectos Asignados';
+        // AGREGADO: Cargar la lista de herramientas (por si se usa en la vista para filtros, info, etc.)
+        // Se carga con 'user' (la persona asignada a la herramienta) por si fuera necesario.
+        $tools = Tool::with('user')->get();
 
-        return view('projects.index', compact('projects'));
+
+        // Pasa el listado de proyectos, el título y las herramientas a la vista.
+        return view('projects.index', compact('projects', 'title', 'tools'));
     }
 
     /**
      * Muestra el formulario para crear un nuevo recurso. (Solo Admin)
      */
-    public function create()
+    public function create(): View
     {
-        // CONTROL DE ACCESO: Solo Administradores pueden acceder a la creación.
-        if (Auth::user()->role !== 'admin') {
-            abort(403, 'Acceso denegado. Solo administradores pueden crear proyectos.');
-        }
+        // CONTROL DE ACCESO: Llama a ProjectPolicy@create. Laravel lanza 403 si falla.
+        $this->authorize('create', Project::class);
 
         // 1. Obtener todos los usuarios para el selector "Asignado a"
         $users = User::orderBy('name')->get(['id', 'name']);
@@ -55,23 +61,21 @@ class ProjectController extends Controller
     /**
      * Store a newly created resource in storage. (Solo Admin)
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
-        // CONTROL DE ACCESO: Solo Administradores pueden guardar proyectos.
-        if (Auth::user()->role !== 'admin') {
-            abort(403, 'Acceso denegado. Solo administradores pueden guardar proyectos.');
-        }
+        // CONTROL DE ACCESO: Llama a ProjectPolicy@create antes de guardar.
+        $this->authorize('create', Project::class);
         
         // 1. Validación de datos
         $validatedData = $request->validate([
-            'name' => 'required|string|max:150', // Coincide con el campo 'name' de la BBDD
+            'name' => 'required|string|max:150',
             'description' => 'nullable|string',
             'status' => 'required|in:Pendiente,En Proceso,Terminado,En Espera de Piezas',
             'priority' => 'required|in:Baja,Media,Alta,Urgente',
             'due_date' => 'nullable|date',
             'assigned_to_user_id' => 'required|exists:users,id',
             
-            // Validación para la relación N:M (tools es un array opcional)
+            // Validación para la relación N:M
             'tools' => 'nullable|array',
             'tools.*' => 'exists:tools,id',
         ]);
@@ -80,26 +84,20 @@ class ProjectController extends Controller
         $project = Project::create($validatedData);
         
         // 3. Manejar la relación Muchos a Muchos (Tools)
-        if (isset($validatedData['tools'])) {
-            // El método attach() inserta las filas en la tabla pivot 'project_tool'
-            $project->tools()->sync($request->input('tools'),[]);
-        }
+        // El sync vacío se maneja con el valor por defecto en el input: $request->input('tools', [])
+        $project->tools()->sync($request->input('tools', []));
 
         // 4. Redirección con mensaje de éxito
         return redirect()->route('projects.index')->with('success', 'Proyecto "' . $project->name . '" creado con éxito.');
     }
 
     /**
-     * Display the specified resource. (Todos pueden ver su proyecto o los del admin)
+     * Display the specified resource.
      */
-    public function show(Project $project)
+    public function show(Project $project): View
     {
-        $user = Auth::user();
-
-        // CONTROL DE ACCESO: Un empleado solo puede ver los proyectos que le han sido asignados.
-        if ($user->role !== 'admin' && $project->assigned_to_user_id !== $user->id) {
-            abort(403, 'Acceso denegado. Este proyecto no te ha sido asignado.');
-        }
+        // CONTROL DE ACCESO: Llama a ProjectPolicy@view($user, $project).
+        $this->authorize('view', $project);
 
         $project->load('assignedTo', 'tools'); // Carga las relaciones necesarias
         return view('projects.show', compact('project')); // Pasa el proyecto a la vista
@@ -108,18 +106,15 @@ class ProjectController extends Controller
     /**
      * Show the form for editing the specified resource. (Solo Admin)
      */
-    public function edit(Project $project)
+    public function edit(Project $project): View
     {
-        // CONTROL DE ACCESO: Solo Administradores pueden acceder a la edición.
-        if (Auth::user()->role !== 'admin') {
-            abort(403, 'Acceso denegado. Solo administradores pueden editar proyectos.');
-        }
+        // CONTROL DE ACCESO: Llama a ProjectPolicy@update.
+        $this->authorize('update', $project);
 
         // Carga todas las herramientas disponibles para el select/checkboxes
         $tools = Tool::all();
 
         // Obtiene los IDs de las herramientas actualmente asociadas al proyecto
-        // 'pluck' extrae una columna, 'toArray' lo convierte a array simple [1, 5, 8]
         $selectedToolIds = $project->tools()->pluck('tool_id')->toArray();
         
         // Obtener todos los usuarios para el selector "Asignado a"
@@ -132,12 +127,10 @@ class ProjectController extends Controller
     /**
      * Update the specified resource in storage. (Solo Admin)
      */
-    public function update(Request $request, Project $project)
+    public function update(Request $request, Project $project): RedirectResponse
     {
-        // CONTROL DE ACCESO: Solo Administradores pueden actualizar proyectos.
-        if (Auth::user()->role !== 'admin') {
-            abort(403, 'Acceso denegado. Solo administradores pueden actualizar proyectos.');
-        }
+        // CONTROL DE ACCESO: Llama a ProjectPolicy@update.
+        $this->authorize('update', $project);
         
         // 1. Validación de los datos
         $validatedData = $request->validate([
@@ -165,12 +158,10 @@ class ProjectController extends Controller
     /**
      * Remove the specified resource from storage. (Solo Admin)
      */
-    public function destroy(Project $project)
+    public function destroy(Project $project): RedirectResponse
     {
-        // CONTROL DE ACCESO: Solo Administradores pueden eliminar proyectos.
-        if (Auth::user()->role !== 'admin') {
-            abort(403, 'Acceso denegado. Solo administradores pueden eliminar proyectos.');
-        }
+        // CONTROL DE ACCESO: Llama a ProjectPolicy@delete.
+        $this->authorize('delete', $project);
         
         // 1. Eliminamos el registro
         $projectname = $project->name; // Guardar el nombre antes de eliminar

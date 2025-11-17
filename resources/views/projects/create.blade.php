@@ -1,5 +1,3 @@
-<!--<script src="https://cdn.tailwindcss.com"></script> <!-- INCLUIDO TEMPORALMENTE: Asegura que los estilos de Tailwind se carguen para visualizar correctamente el formulario. -->
-
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -32,14 +30,14 @@
                     {{-- 1. Nombre del Proyecto --}}
                     <div class="mb-4">
                         <label for="name" class="block text-sm font-medium text-gray-700">Nombre/Título del Proyecto (*)</label>
-                        <input type="text" name="name" id="name" value="{{ old('name') }}" required 
+                        <input type="text" name="name" id="name" value="{{ old('name') }}" required
                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                     </div>
 
                     {{-- 2. Descripción --}}
                     <div class="mb-4">
                         <label for="description" class="block text-sm font-medium text-gray-700">Descripción (Opcional)</label>
-                        <textarea name="description" id="description" rows="3" 
+                        <textarea name="description" id="description" rows="3"
                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">{{ old('description') }}</textarea>
                     </div>
 
@@ -98,7 +96,7 @@
                         <select name="tools[]" id="tools" multiple size="8"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                             @foreach ($tools as $tool)
-                                <option value="{{ $tool->id }}" 
+                                <option value="{{ $tool->id }}"
                                     {{ in_array($tool->id, old('tools', [])) ? 'selected' : '' }}>
                                     {{ $tool->name }}
                                 </option>

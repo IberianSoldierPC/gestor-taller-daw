@@ -12,58 +12,119 @@
                     <span class="block sm:inline">{{ session('status') }}</span>
                 </div>
             @endif
+
+            {{-- ---------------------------------------------------- --}}
+            {{-- BLOQUE DE TARJETAS DE ESTADÍSTICAS --}}
+            {{-- Muestra los totales calculados en el DashboardController --}}
+            {{-- ---------------------------------------------------- --}}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+
+                {{-- 1. Tarjeta: Total de Herramientas --}}
+                <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-indigo-500">
+                    <p class="text-sm font-medium text-gray-500 uppercase tracking-wider">Total Registradas</p>
+                    <p class="text-4xl font-extrabold text-gray-900 mt-1">
+                        {{ $totalTools ?? 0 }}
+                    </p>
+                </div>
+
+                {{-- 2. Tarjeta: Disponibles --}}
+                <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-green-500">
+                    <p class="text-sm font-medium text-gray-500 uppercase tracking-wider">Disponibles</p>
+                    <p class="text-4xl font-extrabold text-gray-900 mt-1">
+                        {{ $availableTools ?? 0 }}
+                    </p>
+                </div>
+
+                {{-- 3. Tarjeta: Prestadas / En Uso --}}
+                <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-yellow-500">
+                    <p class="text-sm font-medium text-gray-500 uppercase tracking-wider">En Préstamo</p>
+                    <p class="text-4xl font-extrabold text-gray-900 mt-1">
+                        {{ $loanedTools ?? 0 }}
+                    </p>
+                </div>
+
+                {{-- 4. Tarjeta: Fuera de Servicio --}}
+                <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-red-500">
+                    <p class="text-sm font-medium text-gray-500 uppercase tracking-wider">Fuera de Servicio</p>
+                    <p class="text-4xl font-extrabold text-gray-900 mt-1">
+                        {{ $brokenTools ?? 0 }}
+                    </p>
+                </div>
+
+            </div>
+            {{-- ---------------------------------------------------- --}}
+            {{-- FIN BLOQUE DE ESTADÍSTICAS --}}
+            {{-- ---------------------------------------------------- --}}
+            
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     
-                    <!-- ENCABEZADO Y BOTÓN DE CREAR -->
                     <div class="flex justify-between items-center mb-6 border-b pb-4">
                         <p class="text-2xl font-extrabold text-indigo-800">Listado de Herramientas</p>
-                        <!-- Botón con sombra y mayor contraste para asegurar visibilidad -->
                         <a href="{{ route('tools.create') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out transform hover:scale-105">
-    Añadir Nueva Herramienta
-</a>
+                            Añadir Nueva Herramienta
+                        </a>
                     </div>
 
-                    <!-- TABLA DE HERRAMIENTAS -->
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ubicación</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Asignado a</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
-                            {{-- Aquí irá el bucle que recorra las herramientas --}}
-                            @foreach ($tools as $tool)
+                            {{-- Se utiliza un mapa de colores para evitar el problema de detección dinámica de clases en Tailwind --}}
+                            @php
+                                // Se incluyen clases para asegurar su compilación en Tailwind
+                                echo '<span class="hidden bg-green-100 text-green-800 bg-red-100 text-red-800 bg-yellow-100 text-yellow-800"></span>';
+                                
+                                // Los estados coinciden con los de la imagen: 'Disponible', 'En Uso', 'Mantenimiento'
+                                $statusColors = [
+                                    'Disponible' => ['bg' => 'bg-green-100', 'text' => 'text-green-800'],
+                                    'En Uso' => ['bg' => 'bg-yellow-100', 'text' => 'text-yellow-800'],
+                                    'Mantenimiento' => ['bg' => 'bg-red-100', 'text' => 'text-red-800'],
+                                    'Averiada' => ['bg' => 'bg-red-100', 'text' => 'text-red-800'],
+                                    'Rota' => ['bg' => 'bg-red-100', 'text' => 'text-red-800'],
+                                ];
+                            @endphp
+
+                            @forelse ($tools as $tool)
+                                @php
+                                    $color = $statusColors[$tool->status] ?? ['bg' => 'bg-gray-100', 'text' => 'text-gray-800'];
+                                @endphp
                             <tr>
                                 <td class="px-6 py-4 whitespace-nowrap">{{ $tool->name }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap">{{ $tool->location }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-{{ $tool->status === 'Operativa' ? 'green' : 'red'}}-100 text-{{ $tool->status === 'Operativa' ? 'green' : 'red'}}-800">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $color['bg'] }} {{ $color['text'] }}">
                                         {{ $tool->status }}
                                     </span>
                                 </td>
+                                {{-- Muestra el nombre del usuario asignado o 'N/A' --}}
+                                <td class="px-6 py-4 whitespace-nowrap">{{ $tool->user->name ?? 'N/A' }}</td>
+                                
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                    <a href="{{ route('tools.edit', $tool->id) }}" class="text-indigo-600 hover:text-indigo-900 mr-4 font-bold trainsition duration 150">Editar</a>
+                                    <a href="{{ route('tools.edit', $tool->id) }}" class="text-indigo-600 hover:text-indigo-900 mr-4 font-bold trainsition duration-150">Editar</a>
+                                    
                                     <form action="{{ route('tools.destroy', $tool->id) }}" method="POST" class="inline">
                                         @csrf
                                         @method('DELETE')
-                                            <button type="submit" class="text-red-600 hover:text-red-900 font-bold transition duration-150" 
-                                                onclick="return confirm('¿Estás seguro de que quieres eliminar esta herramienta?');">
+                                        <button type="submit" class="text-red-600 hover:text-red-900 font-bold transition duration-150"
+                                            onclick="return confirm('¿Estás seguro de que quieres eliminar la herramienta: {{ $tool->name }}?');">
                                             Borrar
-                                            </button>
+                                        </button>
                                     </form>
                                 </td>
                             </tr>
-                            @endforeach
-                            {{-- Si no hay herramientas --}}
-                            @empty($tools)
+                            @empty
                                 <tr>
-                                    <td colspan="4" class="px-6 py-4 text-center text-gray-500">No hay herramientas registradas.</td>
+                                    <td colspan="5" class="px-6 py-4 text-center text-gray-500">No hay herramientas registradas.</td>
                                 </tr>
-                            @endempty
+                            @endforelse
                         </tbody>
                     </table>
 

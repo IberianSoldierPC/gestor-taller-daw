@@ -9,9 +9,17 @@
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6">
 
+                @php
+                    // Pre-calculamos los valores para limpiar el HTML
+                    $currentStatus = old('status', $tool->status);
+                    $currentUserId = old('user_id', $tool->user_id);
+                    // Formatea la fecha para el input type="date"
+                    $currentAcquisitionDate = old('acquisition_date', $tool->acquisition_date ? (is_string($tool->acquisition_date) ? $tool->acquisition_date : $tool->acquisition_date->format('Y-m-d')) : null);
+                @endphp
+
                 <form method="POST" action="{{ route('tools.update', $tool->id) }}">
                     @csrf
-                    {{-- ESTO ES ESENCIAL: Indica que la solicitud es PUT para la actualización --}}
+                    {{-- Indica que la solicitud es PUT para la actualización --}}
                     @method('PUT')
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -24,7 +32,6 @@
                                 name="name"
                                 type="text"
                                 class="mt-1 block w-full"
-                                {{-- Precargamos el valor actual o el valor anterior (old) --}}
                                 :value="old('name', $tool->name)"
                                 required
                                 autofocus
@@ -50,7 +57,6 @@
                         <div>
                             <x-input-label for="status" :value="__('Estado Actual')" />
                             <select id="status" name="status" class="mt-1 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm block w-full" required>
-                                @php $currentStatus = old('status', $tool->status); @endphp
                                 <option value="Operativa" {{ $currentStatus == 'Operativa' ? 'selected' : '' }}>Operativa</option>
                                 <option value="Averiada" {{ $currentStatus == 'Averiada' ? 'selected' : '' }}>Averiada</option>
                                 <option value="Prestada" {{ $currentStatus == 'Prestada' ? 'selected' : '' }}>Prestada</option>
@@ -58,12 +64,14 @@
                             <x-input-error class="mt-2" :messages="$errors->get('status')" />
                         </div>
 
-                        {{-- 4. Campo Usuario Asignado (Relación user_id) --}}
+                        {{-- 4. Campo Usuario Asignado (Relación user_id - Ahora opcional) --}}
                         <div>
-                            <x-input-label for="user_id" :value="__('Asignar a Usuario')" />
-                            {{-- Necesitas tener la variable $users disponible en la vista, igual que en create --}}
-                            <select id="user_id" name="user_id" class="mt-1 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm block w-full" required>
-                                @php $currentUserId = old('user_id', $tool->user_id); @endphp
+                            <x-input-label for="user_id" :value="__('Asignar a Usuario (Opcional)')" />
+                            {{-- Se quita 'required' para permitir Sin Asignar --}}
+                            <select id="user_id" name="user_id" class="mt-1 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm block w-full">
+                                {{-- Opción para "Sin asignar" --}}
+                                <option value="" {{ $currentUserId === null ? 'selected' : '' }}>Sin Asignar</option>
+                                
                                 @foreach ($users as $user)
                                     <option value="{{ $user->id }}" {{ $currentUserId == $user->id ? 'selected' : '' }}>
                                         {{ $user->name }}
@@ -81,8 +89,7 @@
                                 name="acquisition_date"
                                 type="date"
                                 class="mt-1 block w-full"
-                                {{-- Debes formatear la fecha a un string compatible con el input type="date" --}}
-                                :value="old('acquisition_date', $tool->acquisition_date ? $tool->acquisition_date->format('Y-m-d') : null)"
+                                :value="$currentAcquisitionDate"
                             />
                             <x-input-error class="mt-2" :messages="$errors->get('acquisition_date')" />
                         </div>

@@ -1,81 +1,127 @@
-@extends('layouts.app')
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Editar Herramienta: ') . $tool->name }}
+        </h2>
+    </x-slot>
 
-@section('content')
-{{-- 1. Reemplaza 'container' por el contenedor típico de Tailwind/Breeze --}}
-<div class="py-12">
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-        {{-- Añade un fondo blanco y sombra para que se vea como una tarjeta --}}
-        <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
-            
-            <h1 class="text-2xl font-bold mb-6 dark:text-gray-100">
-                Editar Proyecto: {{ $project->name }}
-            </h1>
+    <div class="py-12">
+        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6">
 
-            <form action="{{ route('projects.update', $project) }}" method="POST">
-                @csrf
-                @method('PUT')
+                <form method="POST" action="{{ route('tools.update', $tool->id) }}">
+                    @csrf
+                    {{-- ESTO ES ESENCIAL: Indica que la solicitud es PUT para la actualización --}}
+                    @method('PUT')
 
-                {{-- Campo Nombre --}}
-                <div class="mb-4">
-                    {{-- form-label -> block font-medium text-sm text-gray-700 --}}
-                    <label for="name" class="block font-medium text-sm text-gray-700 dark:text-gray-300">
-                        Nombre del Proyecto
-                    </label>
-                    {{-- form-control -> utiliza las clases de input de Breeze/Jetstream --}}
-                    <input type="text" class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm w-full @error('name') border-red-500 @enderror" id="name" name="name" value="{{ old('name', $project->name) }}" required>
-                    @error('name')
-                        {{-- invalid-feedback -> text-sm text-red-600 --}}
-                        <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
-                    @enderror
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                        {{-- 1. Campo Nombre --}}
+                        <div>
+                            <x-input-label for="name" :value="__('Nombre de la Herramienta')" />
+                            <x-text-input
+                                id="name"
+                                name="name"
+                                type="text"
+                                class="mt-1 block w-full"
+                                :value="old('name', $tool->name)"
+                                required
+                                autofocus
+                            />
+                            <x-input-error class="mt-2" :messages="$errors->get('name')" />
+                        </div>
+
+                        {{-- 2. Campo Ubicación --}}
+                        <div>
+                            <x-input-label for="location" :value="__('Ubicación')" />
+                            <x-text-input
+                                id="location"
+                                name="location"
+                                type="text"
+                                class="mt-1 block w-full"
+                                :value="old('location', $tool->location)"
+                                required
+                            />
+                            <x-input-error class="mt-2" :messages="$errors->get('location')" />
+                        </div>
+
+                        {{-- 3. Campo Estado (Enum) --}}
+                        <div>
+                            <x-input-label for="status" :value="__('Estado Actual')" />
+                            <select id="status" name="status" class="mt-1 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm block w-full" required>
+                                @php $currentStatus = old('status', $tool->status); @endphp
+                                <option value="Operativa" {{ $currentStatus == 'Operativa' ? 'selected' : '' }}>Operativa</option>
+                                <option value="Averiada" {{ $currentStatus == 'Averiada' ? 'selected' : '' }}>Averiada</option>
+                                <option value="Prestada" {{ $currentStatus == 'Prestada' ? 'selected' : '' }}>Prestada</option>
+                            </select>
+                            <x-input-error class="mt-2" :messages="$errors->get('status')" />
+                        </div>
+
+                        {{-- 4. Campo Usuario Asignado (Relación user_id) --}}
+                        <div>
+                            <x-input-label for="user_id" :value="__('Asignar a Usuario')" />
+                            {{-- Se asume que $users se pasa desde el controlador --}}
+                            <select id="user_id" name="user_id" class="mt-1 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm block w-full" required>
+                                @php $currentUserId = old('user_id', $tool->user_id); @endphp
+                                @foreach ($users as $user)
+                                    <option value="{{ $user->id }}" {{ $currentUserId == $user->id ? 'selected' : '' }}>
+                                        {{ $user->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <x-input-error class="mt-2" :messages="$errors->get('user_id')" />
+                        </div>
+                        
+                        {{-- 5. Campo Fecha de Adquisición --}}
+                        <div>
+                            <x-input-label for="acquisition_date" :value="__('Fecha de Adquisición')" />
+                            <x-text-input
+                                id="acquisition_date"
+                                name="acquisition_date"
+                                type="date"
+                                class="mt-1 block w-full"
+                                :value="old('acquisition_date', $tool->acquisition_date ? \Carbon\Carbon::parse($tool->acquisition_date)->format('Y-m-d') : '')"
+                            />
+                            <x-input-error class="mt-2" :messages="$errors->get('acquisition_date')" />
+                        </div>
+                        
+                        {{-- 6. Campo Descripción (ocupa toda la fila) --}}
+                        <div class="md:col-span-2">
+                            <x-input-label for="description" :value="__('Descripción (opcional)')" />
+                            <textarea
+                                id="description"
+                                name="description"
+                                rows="3"
+                                class="mt-1 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm block w-full"
+                            >{{ old('description', $tool->description) }}</textarea>
+                            <x-input-error class="mt-2" :messages="$errors->get('description')" />
+                        </div>
+                    </div>
+
+                    {{-- Botones de Accion --}}
+                    <div class="flex items-center justify-end mt-6 space-x-4">
+                        <a href="{{ route('tools.index') }}" class="text-sm text-gray-600 hover:text-gray-900 transition duration-150 ease-in-out">
+                            Cancelar
+                        </a>
+                        <x-primary-button>
+                            {{ __('Guardar Cambios') }}
+                        </x-primary-button>
+                    </div>
+
+                </form>
+                
+                {{-- Botón de Eliminar (Opcional, pero recomendado en formularios de edición) --}}
+                <div class="mt-6 border-t pt-4">
+                    <form method="POST" action="{{ route('tools.destroy', $tool->id) }}" onsubmit="return confirm('¿Estás seguro de que quieres eliminar esta herramienta? Esta acción es irreversible.');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-500 active:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                            Eliminar Herramienta
+                        </button>
+                    </form>
                 </div>
-
-                {{-- Campo Descripción --}}
-                <div class="mb-4">
-                    <label for="description" class="block font-medium text-sm text-gray-700 dark:text-gray-300">
-                        Descripción
-                    </label>
-                    <textarea class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm w-full @error('description') border-red-500 @enderror" id="description" name="description" rows="3">{{ old('description', $project->description) }}</textarea>
-                    @error('description')
-                        <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                {{-- Campo Herramientas (Checkboxes) --}}
-                <div class="mb-4">
-                    <label class="block font-medium text-sm text-gray-700 dark:text-gray-300 mb-2">Herramientas Utilizadas</label>
-                    {{-- Reemplazamos 'border p-3' por 'space-y-2' --}}
-                    <div class="space-y-2 p-3 border border-gray-300 dark:border-gray-700 rounded-md"> 
-                        @foreach ($tools as $tool)
-                            {{-- form-check form-check-inline -> flex items-center --}}
-                            <div class="flex items-center"> 
-                                <input type="checkbox" id="tool_{{ $tool->id }}" name="tools[]" value="{{ $tool->id }}"
-                                        {{-- Clases de checkbox de Tailwind --}}
-                                        class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500" 
-                                        @checked(in_array($tool->id, old('tools', $selectedToolIds ?? [])))
-                                >
-                                {{-- form-check-label -> ms-2 text-sm text-gray-600 --}}
-                                <label class="ms-2 text-sm text-gray-600 dark:text-gray-300" for="tool_{{ $tool->id }}">
-                                    {{ $tool->name }}
-                                </label>
-                            </div>
-                        @endforeach
-                    </div>
-                    @error('tools')
-                        <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                {{-- Botones (Adaptando btn-primary y btn-secondary a las clases de Tailwind de Breeze) --}}
-                <div class="flex items-center justify-start mt-4">
-                    <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-white focus:bg-gray-700 dark:focus:bg-white active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150">
-                        Guardar Cambios
-                    </button>
-                    <a href="{{ route('projects.index') }}" class="ms-4 text-sm text-gray-600 dark:text-gray-400 leading-tight hover:text-gray-900 dark:hover:text-gray-100">
-                        Cancelar
-                    </a>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-@endsection
+                
+            </div>
+        </div>
+    </div>
+</x-app-layout>

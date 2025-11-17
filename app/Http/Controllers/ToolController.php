@@ -6,41 +6,50 @@ use App\Models\Tool;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class ToolController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Muestra la lista de herramientas, incluyendo estadísticas para la vista (tools.index).
      */
-    public function index()
+    public function index(): View
     {
-         $user = Auth::user();
+        $user = Auth::user();
 
-        // Si el usuario es 'admin', obtiene todas las herramientas.
+        // 1. Obtener listado de herramientas con Eager Loading (quién la tiene asignada)
         if ($user->role === 'admin') {
-            $tools = Tool::all();
+            $tools = Tool::with('user')->get();
         } else {
-            // Si no es admin, solo obtiene las herramientas donde el user_id coincide con el ID del usuario logueado.
-            $tools = Tool::where('user_id', $user->id)->get();
+            $tools = Tool::where('user_id', $user->id)->with('user')->get();
         }
 
-        // Devolver la vista 'tools.index' y pasarle las herramientas.
-        return view('tools.index', compact('tools'));
+        // 2. CÁLCULO DE ESTADÍSTICAS (requeridas por tools.index.blade.php)
+        $totalTools = Tool::count();
+        $availableTools = Tool::where('status', 'Operativa')->count();
+        $loanedTools = Tool::where('status', 'Prestada')->count();
+        // Suma Averiada y cualquier otro estado que signifique fuera de servicio
+        $brokenTools = Tool::whereIn('status', ['Averiada', 'Mantenimiento'])->count(); 
+        
+        // 3. Pasar todas las variables necesarias a la vista
+        return view('tools.index', compact('tools', 'totalTools', 'availableTools', 'loanedTools', 'brokenTools'));
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): View
     {
-        $users = \App\Models\User::orderBy('name')->get(['id', 'name']);
+        // Llamada a \App\Models\User con el FQCN o importando User
+        $users = User::orderBy('name')->get(['id', 'name']); 
         return view('tools.create', compact('users'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         // 1. Validación de datos
         $validatedData = $request->validate([
@@ -53,7 +62,6 @@ class ToolController extends Controller
         ]);
 
         // 2. Creación del recurso
-        // Se utiliza el método create que ya funciona con $fillable
         Tool::create($validatedData);
 
         // 3. Redirección con mensaje de éxito
@@ -71,7 +79,7 @@ class ToolController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(string $id): View
     {
         // Encuentra la herramienta por su ID o falla con 404
         $tool = Tool::findOrFail($id);
@@ -86,7 +94,7 @@ class ToolController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $id): RedirectResponse
     {
         // 1. Encuentra la herramienta por su ID o falla con 404
         $tool = Tool::findOrFail($id);
@@ -111,7 +119,7 @@ class ToolController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $id): RedirectResponse
     {
         // 1. Encontrar la herramienta. Si no existe, lanza un 404.
         $tool = Tool::findOrFail($id);
@@ -124,6 +132,6 @@ class ToolController extends Controller
 
         // 4. Redirigir a la lista con un mensaje de éxito.
         return redirect()->route('tools.index')
-                        ->with('status', 'Herramienta "' . $toolName . '" eliminada correctamente.');
+                         ->with('status', 'Herramienta "' . $toolName . '" eliminada correctamente.');
     }
 }
