@@ -30,15 +30,15 @@ class ToolSeeder extends Seeder
 
         $tools = [
             [
-                'name' => 'Taladro Percutor Bosch', 
-                'description' => 'Para perforar hormigón y metal.', 
+                'name' => 'Taladro Percutor Bosch',
+                'description' => 'Para perforar hormigón y metal.',
                 'location' => 'Almacén A-1',
                 'status' => 'Disponible',
                 'acquisition_date' => now()->subMonths(18),
                 'user_id' => $adminId,
             ],
             [
-                'name' => 'Sierra de Calar Makita', 
+                'name' => 'Sierra de Calar Makita',
                 'description' => 'Cortes curvos y detallados en madera.',
                 'location' => 'Banco de Trabajo #3',
                 'status' => 'En Uso',
@@ -46,7 +46,7 @@ class ToolSeeder extends Seeder
                 'user_id' => $adminId,
             ],
             [
-                'name' => 'Prensa de Banco Pesada', 
+                'name' => 'Prensa de Banco Pesada',
                 'description' => 'Sujeción firme de piezas grandes.',
                 'location' => 'Almacén A-2',
                 'status' => 'Mantenimiento',
@@ -54,7 +54,7 @@ class ToolSeeder extends Seeder
                 'user_id' => $adminId,
             ],
             [
-                'name' => 'Soldador TIG (Fronius)', 
+                'name' => 'Soldador TIG (Fronius)',
                 'description' => 'Soldadura fina de precisión en metales no ferrosos.',
                 'location' => 'Cabina de Soldadura #1',
                 'status' => 'Disponible',
@@ -62,7 +62,7 @@ class ToolSeeder extends Seeder
                 'user_id' => $adminId,
             ],
             [
-                'name' => 'Nivel Láser Hilti', 
+                'name' => 'Nivel Láser Hilti',
                 'description' => 'Proyección de líneas de referencia autonivelante.',
                 'location' => 'Caja de Herramientas G',
                 'status' => 'Disponible',
