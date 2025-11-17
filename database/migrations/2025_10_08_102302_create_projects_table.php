@@ -19,7 +19,6 @@ return new class extends Migration
             // Columnas requeridas por el seeder:
             $table->string('status', 30)->default('Pendiente');
             $table->string('priority', 20)->default('Media');
-            // La columna que estaba causando el error:
             $table->dateTime('due_date')->nullable();
             
             // Asignación de usuario (nullable por si el usuario es eliminado)
