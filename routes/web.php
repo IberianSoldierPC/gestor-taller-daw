@@ -22,7 +22,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('tools', ToolController::class);
     
     // Rutas del Módulo de Proyectos
-    Route::resource('projects', ProjectController::class); 
+    Route::resource('projects', ProjectController::class);
 });
 
 require __DIR__.'/auth.php';

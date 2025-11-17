@@ -2,28 +2,52 @@
 
 namespace App\Models;
 
-// app/Models/Project.php
 use Illuminate\Database\Eloquent\Model;
-use App\Models\User;    // Necesario para la relación 1:N
-use App\Models\Tool;    // Necesario para la relación N:M
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Project extends Model
 {
-    // Campos que se rellenan desde un formulario
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
-        'name', 'description', 'status', 'priority', 'assigned_to_user_id'
+        'name',
+        'description',
+        'status',
+        'priority',
+        'assigned_to_user_id',
+        'due_date', // Correctamente añadido
+    ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'due_date' => 'date', // Correctamente añadido para conversión automática
     ];
     
-    // 1. Relación: Un Proyecto está asignado a UN Usuario (1:N)
-    public function assignedTo()
+    // ---------------- RELACIONES ----------------
+
+    /**
+     * Relación 1:N: Obtiene el usuario asignado a este proyecto.
+     */
+    public function assignedTo(): BelongsTo
     {
-        // Le decimos a Laravel que use la clave foránea 'assigned_to_user_id'
+        // Se usa 'assigned_to_user_id' como clave foránea para evitar ambigüedades.
         return $this->belongsTo(User::class, 'assigned_to_user_id');
     }
 
-    // 2. Relación: Un Proyecto necesita MUCHAS Herramientas (N:M)
-    public function tools()
+    /**
+     * Relación N:M: Obtiene todas las herramientas necesarias para el proyecto.
+     */
+    public function tools(): BelongsToMany
     {
+        // belongsToMany utiliza la tabla pivot 'project_tool' por defecto.
         return $this->belongsToMany(Tool::class);
     }
 }

@@ -41,7 +41,7 @@ El objetivo principal es proporcionar una herramienta robusta para asignar traba
 
 - Node.js (para la compilación de assets con Vite)
 
-- Una base de datos (MySQL, PostgreSQL, SQLite, etc.)
+- Una base de datos MySQL. Se recomienda XAMPP.
 
 # ⚙️ Instalación y Configuración
 
