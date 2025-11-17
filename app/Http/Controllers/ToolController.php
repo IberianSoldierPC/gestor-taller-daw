@@ -46,7 +46,7 @@ class ToolController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'location' => 'required|string|max:255',
-            'status' => 'required|in:Operativa,Averiada,Prestada', 
+            'status' => 'required|in:Operativa,Averiada,Prestada',
             'acquisition_date' => 'required|date',
             'user_id' => 'required|exists:users,id',
             'description' => 'nullable|string',
@@ -95,7 +95,7 @@ class ToolController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'location' => 'required|string|max:255',
-            'status' => 'required|in:Operativa,Averiada,Prestada', 
+            'status' => 'required|in:Operativa,Averiada,Prestada',
             'acquisition_date' => 'required|date',
             'user_id' => 'required|exists:users,id',
             'description' => 'nullable|string',
