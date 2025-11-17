@@ -20,12 +20,14 @@ class ProjectController extends Controller
         // Lógica de roles: Administrador vs. Empleado
         if ($user->role === 'admin') {
             // El admin ve TODOS los proyectos, cargando la relación 'assignedTo' (el usuario asignado) y 'tools'
-            $projects = Project::with('assignedTo', 'tools')->get(); 
+            $projects = Project::with('assignedTo', 'tools')->get();
         } else {
             // El empleado solo ve los proyectos que le han sido asignados
             $projects = Project::where('assigned_to_user_id', $user->id)
                                ->with('assignedTo', 'tools')->get();
         }
+
+        ($user->role === 'admin') ? 'Todos los Proyectos del Taller' : 'Mis Proyectos Asignados';
 
         return view('projects.index', compact('projects'));
     }
@@ -175,7 +177,7 @@ class ProjectController extends Controller
         $project->delete();
 
         // 2. Redirigimos con mensaje de éxito
-        return redirect()->route('projects.index') 
+        return redirect()->route('projects.index')
                              ->with('success', 'El proyecto "' . $projectname . '" ha sido eliminado correctamente.');
     }
 }
