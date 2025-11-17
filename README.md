@@ -82,6 +82,8 @@ Edita el archivo .env para configurar tu conexión a la base de datos (DB_DATABA
 
 ### 4. Base de Datos y Seeders
 
+🚨 Antes de este paso, debes iniciar el servicio de MySQL en tu servidor local
+
 Ejecuta las migraciones para crear las tablas de la base de datos y luego ejecuta los seeders para añadir datos iniciales (como el usuario Administrador y algunas herramientas base).
 ```
 php artisan migrate --seed
