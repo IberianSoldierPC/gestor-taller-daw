@@ -1,13 +1,14 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ __('Editar Herramienta: ') . $tool->name }}
         </h2>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6">
+            <!-- Contenedor del formulario con estilo moderno -->
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-2xl p-8">
 
                 @php
                     // Pre-calculamos los valores para limpiar el HTML
@@ -31,7 +32,7 @@
                                 id="name"
                                 name="name"
                                 type="text"
-                                class="mt-1 block w-full"
+                                class="mt-1 block w-full focus:border-orange-500 focus:ring-orange-500 dark:focus:border-amber-400 dark:focus:ring-amber-400 rounded-lg"
                                 :value="old('name', $tool->name)"
                                 required
                                 autofocus
@@ -46,7 +47,7 @@
                                 id="location"
                                 name="location"
                                 type="text"
-                                class="mt-1 block w-full"
+                                class="mt-1 block w-full focus:border-orange-500 focus:ring-orange-500 dark:focus:border-amber-400 dark:focus:ring-amber-400 rounded-lg"
                                 :value="old('location', $tool->location)"
                                 required
                             />
@@ -56,7 +57,8 @@
                         {{-- 3. Campo Estado (Enum) --}}
                         <div>
                             <x-input-label for="status" :value="__('Estado Actual')" />
-                            <select id="status" name="status" class="mt-1 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm block w-full" required>
+                            <!-- Aplicamos estilos de dark mode y foco naranja -->
+                            <select id="status" name="status" class="mt-1 border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-orange-500 dark:focus:border-amber-400 focus:ring-orange-500 dark:focus:ring-amber-400 rounded-lg shadow-sm block w-full" required>
                                 <option value="Operativa" {{ $currentStatus == 'Operativa' ? 'selected' : '' }}>Operativa</option>
                                 <option value="Averiada" {{ $currentStatus == 'Averiada' ? 'selected' : '' }}>Averiada</option>
                                 <option value="Prestada" {{ $currentStatus == 'Prestada' ? 'selected' : '' }}>Prestada</option>
@@ -67,11 +69,11 @@
                         {{-- 4. Campo Usuario Asignado (Relación user_id - Ahora opcional) --}}
                         <div>
                             <x-input-label for="user_id" :value="__('Asignar a Usuario (Opcional)')" />
-                            {{-- Se quita 'required' para permitir Sin Asignar --}}
-                            <select id="user_id" name="user_id" class="mt-1 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm block w-full">
+                            <!-- Aplicamos estilos de dark mode y foco naranja -->
+                            <select id="user_id" name="user_id" class="mt-1 border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-orange-500 dark:focus:border-amber-400 focus:ring-orange-500 dark:focus:ring-amber-400 rounded-lg shadow-sm block w-full">
                                 {{-- Opción para "Sin asignar" --}}
                                 <option value="" {{ $currentUserId === null ? 'selected' : '' }}>Sin Asignar</option>
-                                
+
                                 @foreach ($users as $user)
                                     <option value="{{ $user->id }}" {{ $currentUserId == $user->id ? 'selected' : '' }}>
                                         {{ $user->name }}
@@ -88,7 +90,7 @@
                                 id="acquisition_date"
                                 name="acquisition_date"
                                 type="date"
-                                class="mt-1 block w-full"
+                                class="mt-1 block w-full focus:border-orange-500 focus:ring-orange-500 dark:focus:border-amber-400 dark:focus:ring-amber-400 rounded-lg"
                                 :value="$currentAcquisitionDate"
                             />
                             <x-input-error class="mt-2" :messages="$errors->get('acquisition_date')" />
@@ -97,16 +99,19 @@
                         {{-- 6. Campo Descripción (ocupa toda la fila) --}}
                         <div class="md:col-span-2">
                             <x-input-label for="description" :value="__('Descripción (opcional)')" />
-                            <textarea id="description" name="description" rows="3" class="mt-1 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm block w-full">{{ old('description', $tool->description) }}</textarea>
+                            <!-- Aplicamos estilos de dark mode y foco naranja a Textarea -->
+                            <textarea id="description" name="description" rows="3" class="mt-1 border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-orange-500 dark:focus:border-amber-400 focus:ring-orange-500 dark:focus:ring-amber-400 rounded-lg shadow-sm block w-full">{{ old('description', $tool->description) }}</textarea>
                             <x-input-error class="mt-2" :messages="$errors->get('description')" />
                         </div>
                     </div>
 
-                    <div class="flex items-center justify-end mt-6">
-                        <a href="{{ route('tools.index') }}" class="text-gray-600 hover:text-gray-900 me-4">
+                    <div class="flex items-center justify-end mt-8">
+                        <!-- Botón de Cancelar -->
+                        <a href="{{ route('tools.index') }}" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 font-medium me-4 py-3 px-6 transition duration-150 rounded-xl">
                             {{ __('Cancelar') }}
                         </a>
-                        <x-primary-button>
+                        <!-- Botón principal de Actualizar con estilo de acento -->
+                        <x-primary-button class="bg-orange-600 hover:bg-orange-700 active:bg-orange-800 dark:bg-amber-500 dark:hover:bg-amber-600 dark:active:bg-amber-700 rounded-xl px-6 py-3 font-semibold shadow-md transition transform hover:scale-[1.02]">
                             {{ __('Actualizar Herramienta') }}
                         </x-primary-button>
                     </div>

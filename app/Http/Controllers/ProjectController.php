@@ -19,24 +19,27 @@ class ProjectController extends Controller
     {
         $user = Auth::user();
 
-        // Determina qué proyectos mostrar basado en el rol del usuario
+        // 1. Determinar la consulta base (Eager loading de relaciones y ordenar)
+        $query = Project::with('assignedTo', 'tools')->orderBy('name', 'asc');
+
+        // 2. Aplicar filtro basado en el rol del usuario
         if ($user->role === 'admin') {
-            // El admin ve TODOS los proyectos. Eager loading de relaciones.
-            $projects = Project::with('assignedTo', 'tools')->get();
             $title = 'Todos los Proyectos del Taller';
         } else {
-            // El empleado solo ve los proyectos que le han sido asignados. Eager loading.
-            $projects = Project::where('assigned_to_user_id', $user->id)
-                               ->with('assignedTo', 'tools')->get();
+            // El empleado solo ve los proyectos que le han sido asignados
+            $query->where('assigned_to_user_id', $user->id);
             $title = 'Mis Proyectos Asignados';
         }
 
-        // AGREGADO: Cargar la lista de herramientas (por si se usa en la vista para filtros, info, etc.)
-        // Se carga con 'user' (la persona asignada a la herramienta) por si fuera necesario.
+        // 3. CORRECCIÓN CLAVE: Aplicar paginación (ej. 10 elementos por página)
+        // Esto asegura que la variable $projects sea un objeto Paginator y no una Collection,
+        // lo que permite usar los métodos hasPages() y links() en la vista.
+        $projects = $query->paginate(10);
+
+        // 4. Cargar la lista de herramientas (como lista de referencia, no paginada)
         $tools = Tool::with('user')->get();
 
-
-        // Pasa el listado de proyectos, el título y las herramientas a la vista.
+        // 5. Pasar el listado de proyectos, el título y las herramientas a la vista.
         return view('projects.index', compact('projects', 'title', 'tools'));
     }
 

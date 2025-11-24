@@ -30,7 +30,7 @@ class ProjectSeeder extends Seeder
         $project1 = Project::create([
             'name' => 'Mesa de Corte CNC',
             'description' => 'Construcción de una mesa de trabajo robusta para el router CNC.',
-            'status' => 'En Proceso',
+            'status' => 'En proceso',
             'priority' => 'Alta',
             'due_date' => now()->addDays(10),
             'assigned_to_user_id' => $employee->id,
@@ -51,7 +51,7 @@ class ProjectSeeder extends Seeder
         $project3 = Project::create([
             'name' => 'Reorganización del Almacén',
             'description' => 'Inventario completo y reubicación de estanterías.',
-            'status' => 'En Espera de Piezas',
+            'status' => 'En espera de piezas',
             'priority' => 'Media',
             'due_date' => now()->addWeeks(3),
             'assigned_to_user_id' => $admin->id, // Asignado al Admin

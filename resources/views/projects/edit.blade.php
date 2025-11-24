@@ -1,127 +1,150 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Editar Herramienta: ') . $tool->name }}
-        </h2>
-    </x-slot>
+    <x-slot name="header">
+        {{-- Título de la cabecera (Header) --}}
+        <h2 class="font-bold text-2xl text-gray-800 dark:text-gray-200 leading-tight">
+            {{-- CORRECCIÓN: El título debe ser "Editar Proyecto" --}}
+            {{ __('Editar Proyecto: ') }}
+            {{-- CORRECCIÓN: Usamos $project->name, no $tool->name --}}
+            <span class="bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-500 font-extrabold">{{ $project->name }}</span>
+        </h2>
+    </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6">
+    {{-- Contenedor de la vista --}}
+    <div class="py-8 md:py-12 bg-gray-50 dark:bg-gray-900">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <!-- Contenedor principal con estilo de tarjeta mejorado -->
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl lg:shadow-2xl sm:rounded-2xl p-6 md:p-10 border border-gray-100 dark:border-gray-700 transition duration-300">
 
-                <form method="POST" action="{{ route('tools.update', $tool->id) }}">
-                    @csrf
-                    {{-- ESTO ES ESENCIAL: Indica que la solicitud es PUT para la actualización --}}
-                    @method('PUT')
+                <h3 class="text-3xl font-extrabold mb-8 border-b-2 border-gray-200 dark:border-gray-700 pb-3 text-gray-800 dark:text-gray-100">
+                    Información del Proyecto
+                </h3>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {{-- Formulario de Edición --}}
+                <form method="POST" action="{{ route('projects.update', $project) }}">
+                    @csrf
+                    @method('PUT')
 
-                        {{-- 1. Campo Nombre --}}
-                        <div>
-                            <x-input-label for="name" :value="__('Nombre de la Herramienta')" />
-                            <x-text-input
-                                id="name"
-                                name="name"
-                                type="text"
-                                class="mt-1 block w-full"
-                                :value="old('name', $tool->name)"
-                                required
-                                autofocus
-                            />
-                            <x-input-error class="mt-2" :messages="$errors->get('name')" />
-                        </div>
-
-                        {{-- 2. Campo Ubicación --}}
-                        <div>
-                            <x-input-label for="location" :value="__('Ubicación')" />
-                            <x-text-input
-                                id="location"
-                                name="location"
-                                type="text"
-                                class="mt-1 block w-full"
-                                :value="old('location', $tool->location)"
-                                required
-                            />
-                            <x-input-error class="mt-2" :messages="$errors->get('location')" />
-                        </div>
-
-                        {{-- 3. Campo Estado (Enum) --}}
-                        <div>
-                            <x-input-label for="status" :value="__('Estado Actual')" />
-                            <select id="status" name="status" class="mt-1 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm block w-full" required>
-                                @php $currentStatus = old('status', $tool->status); @endphp
-                                <option value="Operativa" {{ $currentStatus == 'Operativa' ? 'selected' : '' }}>Operativa</option>
-                                <option value="Averiada" {{ $currentStatus == 'Averiada' ? 'selected' : '' }}>Averiada</option>
-                                <option value="Prestada" {{ $currentStatus == 'Prestada' ? 'selected' : '' }}>Prestada</option>
-                            </select>
-                            <x-input-error class="mt-2" :messages="$errors->get('status')" />
-                        </div>
-
-                        {{-- 4. Campo Usuario Asignado (Relación user_id) --}}
-                        <div>
-                            <x-input-label for="user_id" :value="__('Asignar a Usuario')" />
-                            {{-- Se asume que $users se pasa desde el controlador --}}
-                            <select id="user_id" name="user_id" class="mt-1 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm block w-full" required>
-                                @php $currentUserId = old('user_id', $tool->user_id); @endphp
-                                @foreach ($users as $user)
-                                    <option value="{{ $user->id }}" {{ $currentUserId == $user->id ? 'selected' : '' }}>
-                                        {{ $user->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            <x-input-error class="mt-2" :messages="$errors->get('user_id')" />
-                        </div>
+                    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
                         
-                        {{-- 5. Campo Fecha de Adquisición --}}
-                        <div>
-                            <x-input-label for="acquisition_date" :value="__('Fecha de Adquisición')" />
-                            <x-text-input
-                                id="acquisition_date"
-                                name="acquisition_date"
-                                type="date"
-                                class="mt-1 block w-full"
-                                :value="old('acquisition_date', $tool->acquisition_date ? \Carbon\Carbon::parse($tool->acquisition_date)->format('Y-m-d') : '')"
-                            />
-                            <x-input-error class="mt-2" :messages="$errors->get('acquisition_date')" />
-                        </div>
-                        
-                        {{-- 6. Campo Descripción (ocupa toda la fila) --}}
-                        <div class="md:col-span-2">
-                            <x-input-label for="description" :value="__('Descripción (opcional)')" />
-                            <textarea
-                                id="description"
-                                name="description"
-                                rows="3"
-                                class="mt-1 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm block w-full"
-                            >{{ old('description', $tool->description) }}</textarea>
-                            <x-input-error class="mt-2" :messages="$errors->get('description')" />
-                        </div>
-                    </div>
+                        {{-- Campo Nombre --}}
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nombre</label>
+                            <input type="text" name="name" id="name" value="{{ old('name', $project->name) }}" required
+                                class="w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition duration-150">
+                            @error('name')
+                                <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                            @enderror
+                        </div>
 
-                    {{-- Botones de Accion --}}
-                    <div class="flex items-center justify-end mt-6 space-x-4">
-                        <a href="{{ route('tools.index') }}" class="text-sm text-gray-600 hover:text-gray-900 transition duration-150 ease-in-out">
-                            Cancelar
-                        </a>
-                        <x-primary-button>
-                            {{ __('Guardar Cambios') }}
-                        </x-primary-button>
-                    </div>
+                        {{-- Campo Asignado a (assigned_to_user_id) --}}
+                        <div>
+                            <label for="assigned_to_user_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Asignado a</label>
+                            <select name="assigned_to_user_id" id="assigned_to_user_id" required
+                                class="w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition duration-150">
+                                @foreach ($users as $user)
+                                    <option value="{{ $user->id }}"
+                                        {{ old('assigned_to_user_id', $project->assigned_to_user_id) == $user->id ? 'selected' : '' }}>
+                                        {{ $user->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('assigned_to_user_id')
+                                <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                            @enderror
+                        </div>
 
-                </form>
-                
-                {{-- Botón de Eliminar (Opcional, pero recomendado en formularios de edición) --}}
-                <div class="mt-6 border-t pt-4">
-                    <form method="POST" action="{{ route('tools.destroy', $tool->id) }}" onsubmit="return confirm('¿Estás seguro de que quieres eliminar esta herramienta? Esta acción es irreversible.');">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-500 active:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                            Eliminar Herramienta
+                        {{-- Campo Estatus --}}
+                        <div>
+                            <label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Estatus</label>
+                            <select name="status" id="status" required
+                                class="w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition duration-150">
+                                @php
+                                    $statuses = ['Pendiente', 'En Proceso', 'Terminado', 'En espera de piezas'];
+                                @endphp
+                                @foreach ($statuses as $status)
+                                    <option value="{{ $status }}"
+                                        {{ old('status', $project->status) == $status ? 'selected' : '' }}>
+                                        {{ $status }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('status')
+                                <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        {{-- Campo Prioridad --}}
+                        <div>
+                            <label for="priority" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Prioridad</label>
+                            <select name="priority" id="priority" required
+                                class="w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition duration-150">
+                                @php
+                                    $priorities = ['Baja', 'Media', 'Alta', 'Urgente'];
+                                @endphp
+                                @foreach ($priorities as $priority)
+                                    <option value="{{ $priority }}"
+                                        {{ old('priority', $project->priority) == $priority ? 'selected' : '' }}>
+                                        {{ $priority }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('priority')
+                                <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        
+                        {{-- Campo Fecha de Vencimiento --}}
+                        <div class="sm:col-span-2">
+                            <label for="due_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Fecha de Vencimiento (Opcional)</label>
+                            <input type="date" name="due_date" id="due_date" value="{{ old('due_date', $project->due_date ? date('Y-m-d', strtotime($project->due_date)) : '') }}"
+                                class="w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition duration-150">
+                            @error('due_date')
+                                <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        {{-- Campo Descripción (ocupa dos columnas) --}}
+                        <div class="sm:col-span-2">
+                            <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Descripción</label>
+                            <textarea name="description" id="description" rows="4"
+                                class="w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition duration-150">{{ old('description', $project->description) }}</textarea>
+                            @error('description')
+                                <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+                    
+                    {{-- Separador y Herramientas --}}
+                    <h3 class="text-xl font-bold mt-10 mb-4 border-b border-gray-200 dark:border-gray-700 pb-2 text-gray-800 dark:text-gray-100">
+                        Herramientas Asignadas
+                    </h3>
+
+                    {{-- Lista de Herramientas (checkboxes) --}}
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
+                        @foreach ($tools as $tool)
+                            <label class="flex items-center space-x-2 text-sm text-gray-700 dark:text-gray-300 cursor-pointer p-2 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-indigo-50 dark:hover:bg-gray-700 transition duration-150">
+                                <input type="checkbox" name="tools[]" value="{{ $tool->id }}"
+                                    {{ in_array($tool->id, old('tools', $selectedToolIds)) ? 'checked' : '' }}
+                                    class="rounded text-indigo-600 shadow-sm focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-600">
+                                <span>{{ $tool->name }}</span>
+                            </label>
+                        @endforeach
+                    </div>
+                    @error('tools')
+                        <p class="mt-1 mb-4 text-sm text-red-500">{{ $message }}</p>
+                    @enderror
+
+                    {{-- Botón de Guardar --}}
+                    <div class="flex justify-end mt-6">
+                        <button type="submit"
+                            class="inline-flex items-center px-6 py-3 bg-indigo-600 border border-transparent rounded-full font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150 shadow-lg hover:shadow-xl">
+                            Guardar Cambios
                         </button>
-                    </form>
-                </div>
-                
-            </div>
-        </div>
-    </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
 </x-app-layout>
