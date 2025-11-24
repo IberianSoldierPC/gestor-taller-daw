@@ -18,19 +18,24 @@ class ToolController extends Controller
     {
         $user = Auth::user();
 
-        // 1. Obtener listado de herramientas con Eager Loading (quién la tiene asignada)
-        if ($user->role === 'admin') {
-            $tools = Tool::with('user')->get();
-        } else {
-            $tools = Tool::where('user_id', $user->id)->with('user')->get();
+        // 1. Construir la consulta de herramientas base con Eager Loading
+        $query = Tool::with('user')->orderBy('name', 'asc');
+
+        // Aplicar filtro si el usuario no es 'admin'
+        if ($user->role !== 'admin') {
+            $query->where('user_id', $user->id);
         }
 
-        // 2. CÁLCULO DE ESTADÍSTICAS (requeridas por tools.index.blade.php)
+        // CORRECCIÓN CLAVE: Aplicar paginación (ej. 10 elementos por página)
+        // Esto convierte $tools en un objeto Paginator que la vista necesita.
+        $tools = $query->paginate(10);
+
+        // 2. CÁLCULO DE ESTADÍSTICAS (Estas no se ven afectadas por la paginación)
         $totalTools = Tool::count();
         $availableTools = Tool::where('status', 'Operativa')->count();
         $loanedTools = Tool::where('status', 'Prestada')->count();
         // Suma Averiada y cualquier otro estado que signifique fuera de servicio
-        $brokenTools = Tool::whereIn('status', ['Averiada', 'Mantenimiento'])->count(); 
+        $brokenTools = Tool::whereIn('status', ['Averiada', 'Mantenimiento', 'Rota'])->count();
         
         // 3. Pasar todas las variables necesarias a la vista
         return view('tools.index', compact('tools', 'totalTools', 'availableTools', 'loanedTools', 'brokenTools'));
@@ -42,7 +47,7 @@ class ToolController extends Controller
     public function create(): View
     {
         // Llamada a \App\Models\User con el FQCN o importando User
-        $users = User::orderBy('name')->get(['id', 'name']); 
+        $users = User::orderBy('name')->get(['id', 'name']);
         return view('tools.create', compact('users'));
     }
 
@@ -73,7 +78,7 @@ class ToolController extends Controller
      */
     public function show(string $id)
     {
-        //
+        // Este método no está implementado en tu código, se mantiene vacío
     }
 
     /**
@@ -132,6 +137,6 @@ class ToolController extends Controller
 
         // 4. Redirigir a la lista con un mensaje de éxito.
         return redirect()->route('tools.index')
-                         ->with('status', 'Herramienta "' . $toolName . '" eliminada correctamente.');
+                             ->with('status', 'Herramienta "' . $toolName . '" eliminada correctamente.');
     }
 }
