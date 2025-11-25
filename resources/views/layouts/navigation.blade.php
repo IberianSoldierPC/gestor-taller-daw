@@ -1,10 +1,10 @@
 <nav x-data="{ open: false }" class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
-    
+
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
             <div class="flex">
-                
+
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}">
@@ -15,23 +15,23 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-2 sm:-my-px sm:ms-8 sm:flex">
-                    
+
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')"
                         class="font-semibold text-base hover:text-orange-600 dark:hover:text-amber-400 transition duration-150 ease-in-out">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    
+
                     <x-nav-link :href="route('tools.index')" :active="request()->routeIs('tools.*')"
                         class="font-semibold text-base hover:text-orange-600 dark:hover:text-amber-400 transition duration-150 ease-in-out">
                         {{ __('Herramientas') }}
                     </x-nav-link>
-                    
+
                     <!-- ENLACE CRÍTICO: Debe apuntar a projects.index -->
                     <x-nav-link :href="route('projects.index')" :active="request()->routeIs('projects.*')"
                         class="font-semibold text-base hover:text-orange-600 dark:hover:text-amber-400 transition duration-150 ease-in-out">
                         {{ __('Proyectos') }}
                     </x-nav-link>
-                    
+
                     {{-- Temporalmente comentado hasta que se defina la ruta 'collaborators.index' --}}
                     {{-- <x-nav-link :href="route('collaborators.index')" :active="request()->routeIs('collaborators.*')"
                         class="font-semibold text-base hover:text-orange-600 dark:hover:text-amber-400 transition duration-150 ease-in-out">
@@ -43,6 +43,10 @@
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
+                <div class="me-4">
+                    <x-theme-toggle />
+                </div>
+
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <!-- Botón de Perfil estilizado -->
@@ -67,9 +71,9 @@
                             @csrf
 
                             <x-dropdown-link :href="route('logout')"
-                                    onclick="event.preventDefault();
+                                onclick="event.preventDefault();
                                                 this.closest('form').submit();"
-                                    class="text-red-500 hover:bg-red-100 dark:text-red-400 dark:hover:bg-red-900/40">
+                                class="text-red-500 hover:bg-red-100 dark:text-red-400 dark:hover:bg-red-900/40">
                                 {{ __('Cerrar Sesión') }}
                             </x-dropdown-link>
                         </form>
@@ -79,6 +83,8 @@
 
             <!-- Hamburger (Botón móvil) -->
             <div class="-me-2 flex items-center sm:hidden">
+                <x-theme-toggle />
+                
                 <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 dark:text-gray-500 hover:text-orange-500 dark:hover:text-amber-400 hover:bg-gray-100 dark:hover:bg-gray-700/50 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700/50 focus:text-orange-500 dark:focus:text-amber-400 transition duration-150 ease-in-out">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                         <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -91,7 +97,7 @@
 
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
-        
+
         <!-- Enlaces Responsivos -->
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" class="hover:text-orange-600 dark:hover:text-amber-400">
@@ -127,9 +133,9 @@
                     @csrf
 
                     <x-responsive-nav-link :href="route('logout')"
-                            onclick="event.preventDefault();
+                        onclick="event.preventDefault();
                                         this.closest('form').submit();"
-                            class="text-red-500 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/50">
+                        class="text-red-500 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/50">
                         {{ __('Cerrar Sesión') }}
                     </x-responsive-nav-link>
                 </form>

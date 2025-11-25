@@ -36,11 +36,23 @@ class ProjectController extends Controller
         // lo que permite usar los métodos hasPages() y links() en la vista.
         $projects = $query->paginate(10);
 
-        // 4. Cargar la lista de herramientas (como lista de referencia, no paginada)
+        // 4. Calcular estadísticas de TODOS los proyectos (sin paginación) para las tarjetas
+        $baseQuery = Project::with('assignedTo', 'tools');
+        
+        if ($user->role !== 'admin') {
+            $baseQuery->where('assigned_to_user_id', $user->id);
+        }
+
+        $totalProjects = $baseQuery->count();
+        $inProgressProjects = (clone $baseQuery)->where('status', 'En Proceso')->count();
+        $completedProjects = (clone $baseQuery)->where('status', 'Terminado')->count();
+        $blockedProjects = (clone $baseQuery)->where('status', 'Bloqueado')->orWhere('status', 'En Espera de Piezas')->count();
+
+        // 5. Cargar la lista de herramientas (como lista de referencia, no paginada)
         $tools = Tool::with('user')->get();
 
-        // 5. Pasar el listado de proyectos, el título y las herramientas a la vista.
-        return view('projects.index', compact('projects', 'title', 'tools'));
+        // 6. Pasar el listado de proyectos, el título, las herramientas y las estadísticas a la vista.
+        return view('projects.index', compact('projects', 'title', 'tools', 'totalProjects', 'inProgressProjects', 'completedProjects', 'blockedProjects'));
     }
 
     /**
