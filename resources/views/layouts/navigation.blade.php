@@ -71,6 +71,7 @@
                             @csrf
 
                             <x-dropdown-link :href="route('logout')"
+                                onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); this.closest('form').submit(); }"
                                 onclick="event.preventDefault();
                                                 this.closest('form').submit();"
                                 class="text-red-500 hover:bg-red-100 dark:text-red-400 dark:hover:bg-red-900/40">
@@ -133,6 +134,7 @@
                     @csrf
 
                     <x-responsive-nav-link :href="route('logout')"
+                        onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); this.closest('form').submit(); }"
                         onclick="event.preventDefault();
                                         this.closest('form').submit();"
                         class="text-red-500 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/50">

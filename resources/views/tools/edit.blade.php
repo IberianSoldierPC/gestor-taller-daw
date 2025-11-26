@@ -1,7 +1,8 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Editar Herramienta: ') . $tool->name }}
+            {{ __('Editar Herramienta: ') }}
+            <span class="bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-500 font-extrabold">{{ $tool->name }}</span>
         </h2>
     </x-slot>
 
