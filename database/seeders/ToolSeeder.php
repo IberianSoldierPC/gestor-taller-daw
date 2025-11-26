@@ -4,24 +4,17 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Tool;
-use App\Models\User; // Necesario para obtener el ID del Admin
+use App\Models\User;
 
 class ToolSeeder extends Seeder
 {
-    /**
-     * Crea herramientas de ejemplo con todos los campos requeridos.
-     *
-     * @return void
-     */
+    // Crea herramientas de ejemplo y las asigna al usuario administrador.
     public function run()
     {
-        // Buscamos al usuario administrador para asegurarnos de que existe.
+
         $admin = User::where('email', 'admin@taller.test')->first();
 
-        // Comprobación de seguridad: Si no encontramos al Admin, detenemos el seeder.
-        // Esto previene un error si AdminUserSeeder falló o no se ejecutó.
         if (!$admin) {
-            // Muestra un mensaje de error útil si falla la dependencia.
             echo "ERROR: El usuario administrador 'admin@taller.test' no fue encontrado. Asegúrate de que AdminUserSeeder se ejecute antes.";
             return;
         }
@@ -30,7 +23,7 @@ class ToolSeeder extends Seeder
 
         $tools = [
             [
-                'name' => 'Taladro Percutor Bosch',
+                'name' => 'Taladro percutor Bosch',
                 'description' => 'Para perforar hormigón y metal.',
                 'location' => 'Almacén A-1',
                 'status' => 'Disponible',
@@ -38,7 +31,7 @@ class ToolSeeder extends Seeder
                 'user_id' => $adminId,
             ],
             [
-                'name' => 'Sierra de Calar Makita',
+                'name' => 'Sierra de calar Makita',
                 'description' => 'Cortes curvos y detallados en madera.',
                 'location' => 'Banco de Trabajo #3',
                 'status' => 'En Uso',
@@ -46,7 +39,7 @@ class ToolSeeder extends Seeder
                 'user_id' => $adminId,
             ],
             [
-                'name' => 'Prensa de Banco Pesada',
+                'name' => 'Prensa de banco pesada',
                 'description' => 'Sujeción firme de piezas grandes.',
                 'location' => 'Almacén A-2',
                 'status' => 'Mantenimiento',
@@ -62,7 +55,7 @@ class ToolSeeder extends Seeder
                 'user_id' => $adminId,
             ],
             [
-                'name' => 'Nivel Láser Hilti',
+                'name' => 'Nivel láser Hilti',
                 'description' => 'Proyección de líneas de referencia autonivelante.',
                 'location' => 'Caja de Herramientas G',
                 'status' => 'Disponible',

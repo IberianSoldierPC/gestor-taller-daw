@@ -8,12 +8,10 @@
 
     <title>{{ config('app.name', 'Laravel') }} | Plataforma DIY</title>
 
-    <!-- Google Font 'Instrument Sans' -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700,800&display=swap" rel="stylesheet" />
 
-    <!-- Incluye los assets de Vite (CSS y JS) de la forma estándar de Laravel.
-         Asegúrate de ejecutar 'npm run dev' o 'npm run build' antes de cargar la página. -->
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <!-- Estilos personalizados para el video de fondo y la superposición -->
@@ -26,7 +24,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            z-index: -10; /* Asegura que esté detrás de todo */
+            z-index: -10;
         }
 
         /* Superposición para mejorar la legibilidad del texto sobre el video */
@@ -36,16 +34,15 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.4); /* Oscurecimiento general */
+            background-color: rgba(0, 0, 0, 0.4);
             z-index: -9;
         }
         .dark .video-overlay {
-            background-color: rgba(0, 0, 0, 0.6); /* Un poco más oscuro en modo noche */
+            background-color: rgba(0, 0, 0, 0.6);
         }
         
-        /* La sombra con efecto de elevación al pasar el ratón */
+        /* Sombra personalizada para las tarjetas */
         .card-shadow-hover:hover {
-            /* Usamos un color de sombra más cercano al nuevo acento (Orange) */
             box-shadow: 0 15px 30px -10px rgba(234, 88, 12, 0.2);
             transform: translateY(-2px);
         }

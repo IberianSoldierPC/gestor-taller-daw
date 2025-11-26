@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Inventario de Herramientas') }}
+            {{ __('Inventario de herramientas') }}
         </h2>
     </x-slot>
 
@@ -61,10 +61,10 @@
 
                     <div class="flex justify-between items-center mb-6 border-b border-gray-200 dark:border-gray-700 pb-4">
                         <!-- Título con color de acento unificado -->
-                        <p class="text-2xl font-extrabold text-orange-600 dark:text-amber-400">Listado de Herramientas</p>
+                        <p class="text-2xl font-extrabold text-orange-600 dark:text-amber-400">Listado de herramientas</p>
                         <!-- Botón principal con color de acento unificado -->
                         <a href="{{ route('tools.create') }}" class="bg-orange-600 hover:bg-orange-700 dark:bg-amber-500 dark:hover:bg-amber-600 text-white font-bold py-2 px-4 rounded-xl shadow-md transition duration-150 ease-in-out transform hover:scale-105">
-                            Añadir Nueva Herramienta
+                            Añadir nueva herramienta
                         </a>
                     </div>
 

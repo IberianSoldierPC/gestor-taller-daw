@@ -30,9 +30,9 @@
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg p-6">
                 
-                <h3 class="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100 border-b pb-2">Información Principal</h3>
+                <h3 class="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100 border-b pb-2">Información principal</h3>
                 
-                {{-- Contenedor de Detalles --}}
+                {{-- Contenedor de detalles --}}
                 <div class="space-y-4 text-gray-700 dark:text-gray-300">
                     
                     {{-- Nombre --}}
@@ -70,7 +70,7 @@
                         
                         {{-- Fecha de Vencimiento --}}
                         <div>
-                            <p class="text-sm font-semibold uppercase text-indigo-600 dark:text-indigo-400">Fecha Límite</p>
+                            <p class="text-sm font-semibold uppercase text-indigo-600 dark:text-indigo-400">Fecha límite</p>
                             <p class="font-medium">
                                 {{ $project->due_date ? \Carbon\Carbon::parse($project->due_date)->format('d/m/Y') : 'N/A' }}
                             </p>
@@ -79,12 +79,12 @@
                         {{-- Asignado a --}}
                         <div>
                             <p class="text-sm font-semibold uppercase text-indigo-600 dark:text-indigo-400">Asignado a</p>
-                            <p class="font-medium">{{ $project->assignedTo->name ?? 'Usuario Eliminado' }}</p>
+                            <p class="font-medium">{{ $project->assignedTo->name ?? 'Usuario eliminado' }}</p>
                         </div>
                         
                         {{-- Creado Por (Asumiendo que existe una relación 'user' o 'creator') --}}
                         <div>
-                            <p class="text-sm font-semibold uppercase text-indigo-600 dark:text-indigo-400">Creado Por</p>
+                            <p class="text-sm font-semibold uppercase text-indigo-600 dark:text-indigo-400">Creado por</p>
                             <p class="font-medium">{{ $project->user->name ?? 'Sistema' }}</p>
                         </div>
 
@@ -93,7 +93,7 @@
 
                 {{-- Seccion de Herramientas (N:M) --}}
                 <div class="mt-8 pt-4 border-t dark:border-gray-700">
-                    <h3 class="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100 border-b pb-2">Herramientas Utilizadas</h3>
+                    <h3 class="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100 border-b pb-2">Herramientas utilizadas</h3>
                     
                     @if ($project->tools->isNotEmpty())
                         <div class="flex flex-wrap gap-2">
@@ -108,12 +108,12 @@
                     @endif
                 </div>
 
-                {{-- Seccion de Fechas de Auditoría --}}
+                {{-- Seccion de Fechas de auditoría --}}
                 <div class="mt-8 pt-4 border-t dark:border-gray-700">
-                    <h3 class="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100 border-b pb-2">Auditoría de Tiempos</h3>
+                    <h3 class="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100 border-b pb-2">Auditoría de tiempos</h3>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-600 dark:text-gray-400">
                         
-                        {{-- Fecha de Creación --}}
+                        {{-- Fecha de creación --}}
                         <div>
                             <p class="font-semibold uppercase text-indigo-500">Fecha de Creación</p>
                             <p>{{ $project->created_at->format('d/m/Y H:i:s') }}</p>

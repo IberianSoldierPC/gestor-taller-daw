@@ -29,14 +29,16 @@
     // Inicializar inmediatamente (antes de DOMContentLoaded)
     initTheme();
 
-    // Configurar evento del botón cuando el DOM esté listo
+    // Configurar evento de los botones cuando el DOM esté listo
     document.addEventListener('DOMContentLoaded', () => {
-        const themeToggle = document.getElementById('theme-toggle');
-        
-        if (themeToggle) {
-            themeToggle.addEventListener('click', () => {
-                const isCurrentlyDark = htmlElement.classList.contains('dark');
-                applyTheme(!isCurrentlyDark);
+        const toggles = document.querySelectorAll('[data-theme-toggle]');
+
+        if (toggles && toggles.length) {
+            toggles.forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    const isCurrentlyDark = htmlElement.classList.contains('dark');
+                    applyTheme(!isCurrentlyDark);
+                });
             });
         }
     });

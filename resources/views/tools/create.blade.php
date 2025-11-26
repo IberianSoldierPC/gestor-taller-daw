@@ -63,7 +63,7 @@
                             <x-input-error class="mt-2" :messages="$errors->get('acquisition_date')" />
                         </div>
                         
-                        <!-- Campo Descripción (ocupa 2 columnas) -->
+                        <!-- Campo Descripción -->
                         <div class="md:col-span-2">
                             <x-input-label for="description" :value="__('Descripción (opcional)')" />
                             <!-- Aplicamos estilos del input a Textarea -->
@@ -73,7 +73,7 @@
                     </div>
 
                     <div class="flex items-center justify-end mt-8">
-                        <!-- Botón principal con estilo de acento -->
+                        <!-- Botón principal -->
                         <x-primary-button class="bg-orange-600 hover:bg-orange-700 active:bg-orange-800 dark:bg-amber-500 dark:hover:bg-amber-600 dark:active:bg-amber-700 rounded-xl px-6 py-3 font-semibold shadow-md transition transform hover:scale-[1.02]">
                             {{ __('Guardar Herramienta') }}
                         </x-primary-button>

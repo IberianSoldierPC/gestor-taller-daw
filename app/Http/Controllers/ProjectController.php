@@ -12,14 +12,12 @@ use Illuminate\View\View;
 
 class ProjectController extends Controller
 {
-    /**
-     * Muestra un listado de los recursos (Proyectos).
-     */
+
     public function index(): View
     {
         $user = Auth::user();
 
-        // 1. Determinar la consulta base (Eager loading de relaciones y ordenar)
+        // 1. Determinar la consulta base
         $query = Project::with('assignedTo', 'tools')->orderBy('name', 'asc');
 
         // 2. Aplicar filtro basado en el rol del usuario
@@ -31,9 +29,7 @@ class ProjectController extends Controller
             $title = 'Mis Proyectos Asignados';
         }
 
-        // 3. CORRECCIÓN CLAVE: Aplicar paginación (ej. 10 elementos por página)
-        // Esto asegura que la variable $projects sea un objeto Paginator y no una Collection,
-        // lo que permite usar los métodos hasPages() y links() en la vista.
+        // 3. Aplicar paginación (ej. 10 elementos por página)
         $projects = $query->paginate(10);
 
         // 4. Calcular estadísticas de TODOS los proyectos (sin paginación) para las tarjetas
@@ -44,9 +40,9 @@ class ProjectController extends Controller
         }
 
         $totalProjects = $baseQuery->count();
-        $inProgressProjects = (clone $baseQuery)->where('status', 'En Proceso')->count();
+        $inProgressProjects = (clone $baseQuery)->where('status', 'En proceso')->count();
         $completedProjects = (clone $baseQuery)->where('status', 'Terminado')->count();
-        $blockedProjects = (clone $baseQuery)->where('status', 'Bloqueado')->orWhere('status', 'En Espera de Piezas')->count();
+        $blockedProjects = (clone $baseQuery)->where('status', 'Bloqueado')->orWhere('status', 'En espera de piezas')->count();
 
         // 5. Cargar la lista de herramientas (como lista de referencia, no paginada)
         $tools = Tool::with('user')->get();
@@ -55,9 +51,7 @@ class ProjectController extends Controller
         return view('projects.index', compact('projects', 'title', 'tools', 'totalProjects', 'inProgressProjects', 'completedProjects', 'blockedProjects'));
     }
 
-    /**
-     * Muestra el formulario para crear un nuevo recurso. (Solo Admin)
-     */
+
     public function create(): View
     {
         // CONTROL DE ACCESO: Llama a ProjectPolicy@create. Laravel lanza 403 si falla.
@@ -73,9 +67,7 @@ class ProjectController extends Controller
         return view('projects.create', compact('users', 'tools'));
     }
 
-    /**
-     * Store a newly created resource in storage. (Solo Admin)
-     */
+
     public function store(Request $request): RedirectResponse
     {
         // CONTROL DE ACCESO: Llama a ProjectPolicy@create antes de guardar.
@@ -85,7 +77,7 @@ class ProjectController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:150',
             'description' => 'nullable|string',
-            'status' => 'required|in:Pendiente,En Proceso,Terminado,En Espera de Piezas',
+            'status' => 'required|in:Pendiente,En proceso,Terminado,En espera de piezas',
             'priority' => 'required|in:Baja,Media,Alta,Urgente',
             'due_date' => 'nullable|date',
             'assigned_to_user_id' => 'required|exists:users,id',
@@ -106,9 +98,7 @@ class ProjectController extends Controller
         return redirect()->route('projects.index')->with('success', 'Proyecto "' . $project->name . '" creado con éxito.');
     }
 
-    /**
-     * Display the specified resource.
-     */
+
     public function show(Project $project): View
     {
         // CONTROL DE ACCESO: Llama a ProjectPolicy@view($user, $project).
@@ -118,9 +108,7 @@ class ProjectController extends Controller
         return view('projects.show', compact('project')); // Pasa el proyecto a la vista
     }
 
-    /**
-     * Show the form for editing the specified resource. (Solo Admin)
-     */
+
     public function edit(Project $project): View
     {
         // CONTROL DE ACCESO: Llama a ProjectPolicy@update.
@@ -139,9 +127,7 @@ class ProjectController extends Controller
         return view('projects.edit', compact('project', 'tools', 'selectedToolIds', 'users'));
     }
 
-    /**
-     * Update the specified resource in storage. (Solo Admin)
-     */
+
     public function update(Request $request, Project $project): RedirectResponse
     {
         // CONTROL DE ACCESO: Llama a ProjectPolicy@update.
@@ -151,7 +137,7 @@ class ProjectController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'status' => 'required|in:Pendiente,En Proceso,Terminado,En Espera de Piezas',
+            'status' => 'required|in:Pendiente,En proceso,Terminado,En espera de piezas',
             'priority' => 'required|in:Baja,Media,Alta,Urgente',
             'due_date' => 'nullable|date',
             'assigned_to_user_id' => 'required|exists:users,id',
@@ -170,9 +156,6 @@ class ProjectController extends Controller
                              ->with('success', '¡Proyecto actualizado exitosamente!');
     }
 
-    /**
-     * Remove the specified resource from storage. (Solo Admin)
-     */
     public function destroy(Project $project): RedirectResponse
     {
         // CONTROL DE ACCESO: Llama a ProjectPolicy@delete.

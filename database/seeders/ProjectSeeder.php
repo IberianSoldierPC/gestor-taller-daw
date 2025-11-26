@@ -9,11 +9,8 @@ use App\Models\Tool;
 
 class ProjectSeeder extends Seeder
 {
-    /**
-     * Crea proyectos de ejemplo y los asigna a usuarios y herramientas.
-     *
-     * @return void
-     */
+    // Crea proyectos de ejemplo y los asigna a usuarios y herramientas.
+
     public function run()
     {
         // Obtenemos los usuarios y herramientas necesarios
@@ -28,7 +25,7 @@ class ProjectSeeder extends Seeder
 
         // --- 1. Proyectos Asignados al EMPLEADO (Debe verlos) ---
         $project1 = Project::create([
-            'name' => 'Mesa de Corte CNC',
+            'name' => 'Mesa de corte CNC',
             'description' => 'Construcción de una mesa de trabajo robusta para el router CNC.',
             'status' => 'En proceso',
             'priority' => 'Alta',
@@ -38,7 +35,7 @@ class ProjectSeeder extends Seeder
         $project1->tools()->attach($allTools->random(2)->pluck('id')); // Asignar 2 herramientas aleatorias
 
         $project2 = Project::create([
-            'name' => 'Reparación de Compresor',
+            'name' => 'Reparación de compresor',
             'description' => 'Diagnóstico y reparación de fugas en el compresor principal.',
             'status' => 'Pendiente',
             'priority' => 'Urgente',
@@ -49,7 +46,7 @@ class ProjectSeeder extends Seeder
 
         // --- 2. Proyectos Asignados al ADMIN (Visibles para Admin, INVISIBLES para Empleado) ---
         $project3 = Project::create([
-            'name' => 'Reorganización del Almacén',
+            'name' => 'Reorganización del almacén',
             'description' => 'Inventario completo y reubicación de estanterías.',
             'status' => 'En espera de piezas',
             'priority' => 'Media',
@@ -60,7 +57,7 @@ class ProjectSeeder extends Seeder
 
         // --- 3. Proyecto Terminado (Visibles para Admin, INVISIBLES para Empleado si no está asignado a él) ---
         Project::create([
-            'name' => 'Diseño de la App Móvil',
+            'name' => 'Diseño de la app móvil',
             'description' => 'Fase de diseño UX/UI de la nueva aplicación de gestión.',
             'status' => 'Terminado',
             'priority' => 'Baja',

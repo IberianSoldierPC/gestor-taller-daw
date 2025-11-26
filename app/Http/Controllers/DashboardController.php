@@ -30,7 +30,6 @@ class DashboardController extends Controller
         $brokenTools = Tool::whereIn('status', ['Averiada', 'Mantenimiento'])->count();
 
         // 2. OBTENER LISTADO DE HERRAMIENTAS (para la tabla inferior)
-        // Se aplica la lógica de filtrado por rol. Se usa with('user') para Eager Loading.
         if ($user->role === 'admin') {
             // Admin ve todas las herramientas
             $tools = Tool::with('user')->get();
@@ -45,7 +44,7 @@ class DashboardController extends Controller
             'availableTools' => $availableTools,
             'loanedTools' => $loanedTools,
             'brokenTools' => $brokenTools,
-            'tools' => $tools, // Añadido para que la tabla inferior funcione
+            'tools' => $tools,
         ]);
     }
 }
