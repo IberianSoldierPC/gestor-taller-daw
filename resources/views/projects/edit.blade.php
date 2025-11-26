@@ -2,9 +2,7 @@
     <x-slot name="header">
         {{-- Título de la cabecera (Header) --}}
         <h2 class="font-bold text-2xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{-- CORRECCIÓN: El título debe ser "Editar Proyecto" --}}
-            {{ __('Editar Proyecto: ') }}
-            {{-- CORRECCIÓN: Usamos $project->name, no $tool->name --}}
+            {{ __('Editar proyecto: ') }}
             <span class="bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-500 font-extrabold">{{ $project->name }}</span>
         </h2>
     </x-slot>
