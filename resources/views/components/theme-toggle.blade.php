@@ -1,7 +1,7 @@
 <button
-    id="theme-toggle"
+    data-theme-toggle
     type="button"
-    class="inline-flex items-center justify-center p-2 rounded-lg text-gray-500 hover:text-orange-600 dark:hover:text-amber-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none transition duration-150"
+    class="theme-toggle inline-flex items-center justify-center p-2 rounded-lg text-gray-500 hover:text-orange-600 dark:hover:text-amber-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none transition duration-150"
     aria-label="Cambiar tema">
     
     <!-- Icono Sol (modo día) -->

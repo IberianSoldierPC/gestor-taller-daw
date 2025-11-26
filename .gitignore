@@ -22,3 +22,18 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Added for TFG delivery: ignore large deps and generated artifacts
+Sonarqube/
+backups/
+vendor/
+node_modules/
+dist/
+public/*.map
+**/*.js.map
+**/*.css.map
+*.map
+
+# Optional: IDE/editor settings
+.vscode/
+.idea/

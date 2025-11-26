@@ -8,11 +8,7 @@ use Illuminate\Support\Facades\Hash;
 
 class AdminUserSeeder extends Seeder
 {
-    /**
-     * Crea un usuario Administrador y un usuario Empleado de prueba.
-     *
-     * @return void
-     */
+
     public function run()
     {
         // 1. Usuario Administrador (Puede ver todos los proyectos)
