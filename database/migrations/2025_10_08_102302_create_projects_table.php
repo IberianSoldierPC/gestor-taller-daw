@@ -6,9 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
+
     public function up(): void
     {
         Schema::create('projects', function (Blueprint $table) {
@@ -16,12 +14,10 @@ return new class extends Migration
             $table->string('name', 150);
             $table->text('description')->nullable();
             
-            // Columnas requeridas por el seeder:
             $table->string('status', 30)->default('Pendiente');
             $table->string('priority', 20)->default('Media');
             $table->dateTime('due_date')->nullable();
             
-            // Asignación de usuario (nullable por si el usuario es eliminado)
             $table->foreignId('assigned_to_user_id')
                   ->nullable()
                   ->constrained('users')
@@ -31,9 +27,6 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('projects');

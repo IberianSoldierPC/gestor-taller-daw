@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Gestión de Proyectos DIY') }}
+            {{ __('Gestión de proyectos DIY') }}
         </h2>
     </x-slot>
 
@@ -20,32 +20,32 @@
             {{-- ---------------------------------------------------- --}}
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
 
-                {{-- 1. Tarjeta: Total de Proyectos (COLOR NARANJA PRINCIPAL) --}}
-                <div class="bg-gray-50 dark:bg-gray-700 p-6 rounded-xl shadow-lg border-l-4 border-orange-500 dark:border-orange-400 transition duration-300 hover:shadow-xl">
+                {{-- 1. Tarjeta: Total de proyectos (COLOR NARANJA PRINCIPAL) --}}
+                <div class="bg-white dark:bg-gray-700 p-6 rounded-2xl shadow-xl border-l-4 border-orange-500 dark:border-amber-400 transition hover:shadow-2xl">
                     <p class="text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Total Registrados</p>
                     <p class="text-4xl font-extrabold text-gray-900 dark:text-white mt-1">
                         {{ $totalProjects ?? 0 }}
                     </p>
                 </div>
 
-                {{-- 2. Tarjeta: Proyectos En Progreso (COLOR ÁMBAR/AMARILLO CÁLIDO) --}}
-                <div class="bg-gray-50 dark:bg-gray-700 p-6 rounded-xl shadow-lg border-l-4 border-amber-500 dark:border-amber-400 transition duration-300 hover:shadow-xl">
+                {{-- 2. Tarjeta: Proyectos en progreso (COLOR ÁMBAR/AMARILLO CÁLIDO) --}}
+                <div class="bg-white dark:bg-gray-700 p-6 rounded-2xl shadow-xl border-l-4 border-orange-500 dark:border-amber-400 transition hover:shadow-2xl">
                     <p class="text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">En Progreso</p>
                     <p class="text-4xl font-extrabold text-gray-900 dark:text-white mt-1">
                         {{ $inProgressProjects ?? 0 }}
                     </p>
                 </div>
 
-                {{-- 3. Tarjeta: Proyectos Completados (COLOR VERDE - ÉXITO) --}}
-                <div class="bg-gray-50 dark:bg-gray-700 p-6 rounded-xl shadow-lg border-l-4 border-green-500 dark:border-green-400 transition duration-300 hover:shadow-xl">
+                {{-- 3. Tarjeta: Proyectos completados (COLOR VERDE - ÉXITO) --}}
+                <div class="bg-white dark:bg-gray-700 p-6 rounded-2xl shadow-xl border-l-4 border-orange-500 dark:border-amber-400 transition hover:shadow-2xl">
                     <p class="text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Completados</p>
                     <p class="text-4xl font-extrabold text-gray-900 dark:text-white mt-1">
                         {{ $completedProjects ?? 0 }}
                     </p>
                 </div>
 
-                {{-- 4. Tarjeta: Proyectos Bloqueados/Riesgo (COLOR ROJO - ALERTA) --}}
-                <div class="bg-gray-50 dark:bg-gray-700 p-6 rounded-xl shadow-lg border-l-4 border-red-500 dark:border-red-400 transition duration-300 hover:shadow-xl">
+                {{-- 4. Tarjeta: Proyectos bloqueados/riesgo (COLOR ROJO - ALERTA) --}}
+                <div class="bg-white dark:bg-gray-700 p-6 rounded-2xl shadow-xl border-l-4 border-orange-500 dark:border-amber-400 transition hover:shadow-2xl">
                     <p class="text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Bloqueados / Riesgo</p>
                     <p class="text-4xl font-extrabold text-gray-900 dark:text-white mt-1">
                         {{ $blockedProjects ?? 0 }}
@@ -62,13 +62,13 @@
 
                     <div class="flex justify-between items-center mb-6 border-b border-gray-200 dark:border-gray-700 pb-4">
                         {{-- Título principal con el color de la marca naranja --}}
-                        <p class="text-2xl font-extrabold text-orange-600 dark:text-amber-400">Listado de Proyectos</p>
+                        <p class="text-2xl font-extrabold text-orange-600 dark:text-amber-400">Listado de proyectos</p>
                         {{-- Botón de acción principal con color naranja --}}
                         <a href="{{ route('projects.create') }}" class="bg-orange-600 hover:bg-orange-700 dark:bg-orange-500 dark:hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out transform hover:scale-105">
                             <svg class="w-5 h-5 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                             </svg>
-                            Añadir Nuevo Proyecto
+                            Añadir nuevo proyecto
                         </a>
                     </div>
 
@@ -76,8 +76,8 @@
                         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                             <thead class="bg-gray-50 dark:bg-gray-700 border-b-2 border-gray-200 dark:border-gray-600">
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Nombre del Proyecto</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Fecha Límite</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Nombre del proyecto</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Fecha límite</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Estado</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Responsable</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Acciones</th>
@@ -118,7 +118,7 @@
                                     </td>
                                     
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full border border-opacity-30 {{ $color['bg'] }} {{ $color['text'] }}">
+                                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full {{ $color['bg'] }} {{ $color['text'] }}">
                                             {{ $project->status }}
                                         </span>
                                     </td>
@@ -143,7 +143,7 @@
                                 @empty
                                 <tr>
                                     <td colspan="5" class="px-6 py-6 text-center text-lg text-gray-500 dark:text-gray-400">
-                                        <p>✨ ¡Genial! No hay proyectos registrados aún.</p>
+                                        <p> ¡Genial! No hay proyectos registrados aún.</p>
                                         {{-- Enlace de acción con color naranja --}}
                                         <a href="{{ route('projects.create') }}" class="text-orange-600 dark:text-orange-400 hover:text-orange-900 dark:hover:text-orange-300 underline mt-2 inline-block">Añadir el primer proyecto</a>
                                     </td>
@@ -220,25 +220,20 @@
                     const projectId = this.getAttribute('data-project-id');
                     const projectName = this.getAttribute('data-project-name');
 
-                    // 1. Configurar el formulario con la ruta correcta
-                    // Se usa un placeholder que Blade reemplaza en la carga de la página
+
                     const deleteRoute = `{{ route('projects.destroy', 'PLACEHOLDER') }}`.replace('PLACEHOLDER', projectId);
                     form.action = deleteRoute;
 
-                    // 2. Mostrar el nombre del proyecto en el modal
                     projectNameDisplay.textContent = projectName;
 
-                    // 3. Mostrar el modal
                     modal.classList.remove('hidden');
                 });
             });
 
-            // 4. Lógica para cerrar el modal
             cancelButton.addEventListener('click', function() {
                 modal.classList.add('hidden');
             });
 
-            // Cierra el modal si se hace clic fuera de él
             modal.addEventListener('click', function(e) {
                 if (e.target === modal) {
                     modal.classList.add('hidden');

@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Panel de Control del Proyecto DIY') }}
+            {{ __('Panel de control del proyecto DIY') }}
         </h2>
     </x-slot>
 
@@ -9,10 +9,8 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-2xl">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    
-                    <!-- CRÍTICO: Cambio el color del título principal al acento del proyecto (Naranja/Ámbar) -->
                     <h3 class="text-3xl font-bold mb-8 text-orange-600 dark:text-amber-400">
-                        {{ __('Resumen del Inventario de Herramientas') }}
+                        {{ __('Resumen del inventario de herramientas') }}
                     </h3>
 
                     <!-- GRID DE MÉTRICAS (Ajuste de redondeo y sombra) -->
@@ -58,19 +56,19 @@
                     <hr class="my-10 border-gray-200 dark:border-gray-700">
 
                     <div class="mt-6">
-                        <h4 class="text-2xl font-bold mb-6 text-gray-700 dark:text-gray-300">Acciones Rápidas</h4>
+                        <h4 class="text-2xl font-bold mb-6 text-gray-700 dark:text-gray-300">Acciones rápidas</h4>
                         <div class="flex flex-wrap gap-4">
                             
-                            <!-- CRÍTICO: Botón principal de acción en color de acento (Naranja) -->
+                            <!-- Botón principal -->
                             <a href="{{ route('tools.create') }}" class="flex items-center bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition duration-150 transform hover:scale-[1.02]">
                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
-                                Añadir Herramienta
+                                Añadir herramienta
                             </a>
                             
                             <!-- Botón secundario -->
                             <a href="{{ route('tools.index') }}" class="flex items-center bg-gray-200 hover:bg-gray-300 text-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white font-bold py-3 px-6 rounded-xl shadow-lg transition duration-150 transform hover:scale-[1.02]">
                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                                Revisar Inventario
+                                Revisar inventario
                             </a>
                         </div>
                     </div>

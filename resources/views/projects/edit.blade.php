@@ -18,14 +18,14 @@
                     Información del Proyecto
                 </h3>
 
-                {{-- Formulario de Edición --}}
+                {{-- Formulario de edición --}}
                 <form method="POST" action="{{ route('projects.update', $project) }}">
                     @csrf
                     @method('PUT')
 
                     <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
                         
-                        {{-- Campo Nombre --}}
+                        {{-- Campo nombre --}}
                         <div>
                             <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nombre</label>
                             <input type="text" name="name" id="name" value="{{ old('name', $project->name) }}" required
@@ -35,7 +35,7 @@
                             @enderror
                         </div>
 
-                        {{-- Campo Asignado a (assigned_to_user_id) --}}
+                        {{-- Campo asignado a (assigned_to_user_id) --}}
                         <div>
                             <label for="assigned_to_user_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Asignado a</label>
                             <select name="assigned_to_user_id" id="assigned_to_user_id" required
@@ -52,13 +52,13 @@
                             @enderror
                         </div>
 
-                        {{-- Campo Estatus --}}
+                        {{-- Campo estatus --}}
                         <div>
                             <label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Estatus</label>
                             <select name="status" id="status" required
                                 class="w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition duration-150">
                                 @php
-                                    $statuses = ['Pendiente', 'En Proceso', 'Terminado', 'En espera de piezas'];
+                                    $statuses = ['Pendiente', 'En proceso', 'Terminado', 'En espera de piezas'];
                                 @endphp
                                 @foreach ($statuses as $status)
                                     <option value="{{ $status }}"
@@ -72,7 +72,7 @@
                             @enderror
                         </div>
 
-                        {{-- Campo Prioridad --}}
+                        {{-- Campo prioridad --}}
                         <div>
                             <label for="priority" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Prioridad</label>
                             <select name="priority" id="priority" required
@@ -92,9 +92,9 @@
                             @enderror
                         </div>
                         
-                        {{-- Campo Fecha de Vencimiento --}}
+                        {{-- Campo Fecha de vencimiento --}}
                         <div class="sm:col-span-2">
-                            <label for="due_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Fecha de Vencimiento (Opcional)</label>
+                            <label for="due_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Fecha de vencimiento (opcional)</label>
                             <input type="date" name="due_date" id="due_date" value="{{ old('due_date', $project->due_date ? date('Y-m-d', strtotime($project->due_date)) : '') }}"
                                 class="w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition duration-150">
                             @error('due_date')
@@ -102,7 +102,7 @@
                             @enderror
                         </div>
 
-                        {{-- Campo Descripción (ocupa dos columnas) --}}
+                        {{-- Campo descripción (ocupa dos columnas) --}}
                         <div class="sm:col-span-2">
                             <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Descripción</label>
                             <textarea name="description" id="description" rows="4"
@@ -133,11 +133,11 @@
                         <p class="mt-1 mb-4 text-sm text-red-500">{{ $message }}</p>
                     @enderror
 
-                    {{-- Botón de Guardar --}}
+                    {{-- Botón de guardar --}}
                     <div class="flex justify-end mt-6">
                         <button type="submit"
                             class="inline-flex items-center px-6 py-3 bg-indigo-600 border border-transparent rounded-full font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150 shadow-lg hover:shadow-xl">
-                            Guardar Cambios
+                            Guardar cambios
                         </button>
                     </div>
 

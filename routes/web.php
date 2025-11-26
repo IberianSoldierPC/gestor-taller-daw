@@ -13,11 +13,15 @@ Route::get('/', function () {
 Route::get('/dashboard', function () {
     // Conteos básicos — ajusta los where() según tu esquema de base de datos
     $totalTools     = Tool::count();
-    $availableTools = Tool::where('status', 'available')->count(); // o ->where('is_available', true)
-    $loanedTools    = Tool::where('status', 'loaned')->count();    // o ->whereNotNull('loaned_to')
-    $brokenTools    = Tool::where('status', 'broken')->count();    // o ->where('condition','broken')
+    // Usar los mismos valores de estado que usa ToolController y las migraciones/seeder
+    $availableTools = Tool::where('status', 'Operativa')->orWhere('status', 'Disponible')->count();
+    $loanedTools    = Tool::where('status', 'Prestada')->orWhere('status', 'En Uso')->count();
+    $brokenTools    = Tool::whereIn('status', ['Averiada', 'Mantenimiento', 'Rota'])->count();
 
-    return view('dashboard', compact('totalTools', 'availableTools', 'loanedTools', 'brokenTools'));
+    // Obtener listado de herramientas con el usuario asignado para el listado
+    $tools = Tool::with('user')->orderBy('name')->get();
+
+    return view('dashboard', compact('totalTools', 'availableTools', 'loanedTools', 'brokenTools', 'tools'));
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -31,5 +35,5 @@ Route::middleware('auth')->group(function () {
     // Rutas del Módulo de Proyectos
     Route::resource('projects', ProjectController::class);
 });
-
-require __DIR__.'/auth.php';
+ 
+require_once __DIR__.'/auth.php';

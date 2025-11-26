@@ -2,16 +2,16 @@
 
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
-            <div class="flex">
+        <div class="relative flex justify-between h-16">
+            <!-- Centered Logo (absolute) -->
+            <div class="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+                <a href="{{ route('dashboard') }}" class="pointer-events-auto">
+                    <!-- Color del logo ajustado al acento principal (Naranja/Ámbar) -->
+                    <x-application-logo class="block h-9 w-auto fill-current text-orange-600 dark:text-amber-400" />
+                </a>
+            </div>
 
-                <!-- Logo -->
-                <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
-                        <!-- Color del logo ajustado al acento principal (Naranja/Ámbar) -->
-                        <x-application-logo class="block h-9 w-auto fill-current text-orange-600 dark:text-amber-400" />
-                    </a>
-                </div>
+            <div class="flex items-center">
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-2 sm:-my-px sm:ms-8 sm:flex">
