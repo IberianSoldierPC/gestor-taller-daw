@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>{{ config('app.name', 'Laravel') }} | Plataforma DIY</title>
+    <title>{{ config('app.name', 'Gestor Taller') }} | Plataforma del Taller</title>
 
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700,800&display=swap" rel="stylesheet" />
@@ -106,11 +106,11 @@
                             </svg>
                         </span>
                         <h1 class="text-3xl lg:text-4xl font-extrabold text-[#1b1b18] dark:text-[#EDEDEC]">
-                            Plataforma DIY y Gestión de Herramientas
+                            Gestor de Taller e Inventario
                         </h1>
                     </div>
                     <p class="text-lg text-[#706f6c] dark:text-[#A1A09A] mt-2">
-                        Tu inventario digital y compañero de proyectos.
+                        Controla tu inventario y proyectos del taller.
                     </p>
                 </div>
 
@@ -130,7 +130,7 @@
                                 </svg>
                             </span>
                             <p class="text-base text-[#1b1b18] dark:text-[#EDEDEC]">
-                                <strong class="font-semibold">Inventario Digital:</strong> Registra cada componente o herramienta con sus detalles y especificaciones.
+                                <strong class="font-semibold">Inventario Digital:</strong> Registra cada herramienta con sus detalles y ubicación.
                             </p>
                         </li>
                         <li class="flex items-start">
@@ -140,7 +140,7 @@
                                 </svg>
                             </span>
                             <p class="text-base text-[#1b1b18] dark:text-[#EDEDEC]">
-                                <strong class="font-semibold">Control de Estado:</strong> Monitoriza si una herramienta está 'Disponible', 'Prestada' o necesita 'Mantenimiento'.
+                                <strong class="font-semibold">Control de Estado:</strong> Sigue si está 'Operativa', 'Prestada' o en 'Mantenimiento'.
                             </p>
                         </li>
                         <li class="flex items-start">
@@ -150,7 +150,7 @@
                                 </svg>
                             </span>
                             <p class="text-base text-[#1b1b18] dark:text-[#EDEDEC]">
-                                <strong class="font-semibold">Colaboración de Usuarios:</strong> Asigna recursos a distintos usuarios o proyectos dentro de tu entorno de trabajo.
+                                <strong class="font-semibold">Asignación de Usuarios:</strong> Asigna recursos a responsables y proyectos.
                             </p>
                         </li>
                     </ul>
@@ -162,7 +162,7 @@
                         ¿Listo para empezar?
                     </h3>
                     <a
-                        href="{{ route('login') }}"
+                        href="{{ Route::has('login') ? route('login') : url('/') }}"
                         class="inline-flex items-center text-center justify-center w-full px-6 py-3 text-base font-bold text-white bg-orange-600 rounded-lg shadow-lg hover:bg-orange-700 dark:bg-amber-600 dark:hover:bg-amber-700 transition transform hover:scale-[1.01] duration-300">
                         ACCEDER Y GESTIONAR MI INVENTARIO
                     </a>

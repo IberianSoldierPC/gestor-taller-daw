@@ -7,12 +7,12 @@
 
     {{-- Lógica Blade para Badges de Estado y Prioridad --}}
     @php
-        // Definición de clases para el estado
+        // Definición de clases para el estado (alineado con los valores del sistema)
         $statusClasses = [
             'Pendiente' => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
-            'En Curso' => 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
-            'Completado' => 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
-            'Cancelado' => 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
+            'En proceso' => 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-300',
+            'Terminado' => 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
+            'En espera de piezas' => 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
         ];
         $currentStatusClass = $statusClasses[$project->status] ?? 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
 
@@ -82,11 +82,7 @@
                             <p class="font-medium">{{ $project->assignedTo->name ?? 'Usuario eliminado' }}</p>
                         </div>
                         
-                        {{-- Creado Por (Asumiendo que existe una relación 'user' o 'creator') --}}
-                        <div>
-                            <p class="text-sm font-semibold uppercase text-indigo-600 dark:text-indigo-400">Creado por</p>
-                            <p class="font-medium">{{ $project->user->name ?? 'Sistema' }}</p>
-                        </div>
+                        {{-- (Opcional) Creado Por: eliminado porque no existe relación definida en el modelo --}}
 
                     </div>
                 </div>

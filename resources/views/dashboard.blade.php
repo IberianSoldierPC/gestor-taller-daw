@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Panel de control del proyecto DIY') }}
+            {{ __('Panel del Taller') }}
         </h2>
     </x-slot>
 
@@ -10,7 +10,7 @@
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-2xl">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     <h3 class="text-3xl font-bold mb-8 text-orange-600 dark:text-amber-400">
-                        {{ __('Resumen del inventario de herramientas') }}
+                        {{ __('Resumen de Herramientas') }}
                     </h3>
 
                     <!-- GRID DE MÉTRICAS (Ajuste de redondeo y sombra) -->
@@ -32,6 +32,7 @@
                                 {{ $availableTools ?? 'N/A' }}
                             </p>
                             <p class="text-sm mt-3 text-green-600 dark:text-green-400 font-medium">Listas para usar o asignar.</p>
+                            <a href="{{ route('tools.index', ['status' => 'Disponible']) }}" class="mt-2 inline-block text-green-700 dark:text-green-300 hover:underline text-sm">Ver disponibles</a>
                         </div>
 
                         <!-- Tarjeta: Actualmente Prestadas -->
@@ -41,6 +42,7 @@
                                 {{ $loanedTools ?? 'N/A' }}
                             </p>
                             <p class="text-sm mt-3 text-yellow-600 dark:text-yellow-400 font-medium">Requieren seguimiento.</p>
+                            <a href="{{ route('tools.index', ['status' => 'Prestada']) }}" class="mt-2 inline-block text-yellow-700 dark:text-yellow-300 hover:underline text-sm">Ver prestadas</a>
                         </div>
                         
                         <!-- Tarjeta: Averiadas / Reparación -->
@@ -50,12 +52,51 @@
                                 {{ $brokenTools ?? 'N/A' }}
                             </p>
                             <p class="text-sm mt-3 text-red-600 dark:text-red-400 font-medium">Necesitan atención.</p>
+                            <a href="{{ route('tools.index', ['status' => 'Averiada']) }}" class="mt-2 inline-block text-red-700 dark:text-red-300 hover:underline text-sm">Ver averiadas</a>
                         </div>
                     </div>
                     
                     <hr class="my-10 border-gray-200 dark:border-gray-700">
+                    
+                    <h3 class="text-3xl font-bold mb-8 text-orange-600 dark:text-amber-400">
+                        {{ __('Resumen de Proyectos') }}
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <!-- Total de Proyectos: Azul (como Total herramientas) -->
+                        <div class="bg-blue-100 dark:bg-blue-900 p-6 rounded-2xl shadow-xl border-l-4 border-blue-500 hover:shadow-2xl transition duration-300">
+                            <p class="text-sm font-semibold text-blue-700 dark:text-blue-300 uppercase tracking-wider">Total de Proyectos</p>
+                            <p class="text-5xl font-extrabold text-blue-800 dark:text-blue-100 mt-2">
+                                {{ $totalProjects ?? 'N/A' }}
+                            </p>
+                            <a href="{{ route('projects.index') }}" class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200 text-sm mt-3 block font-medium">Ver proyectos &rarr;</a>
+                        </div>
+                        <!-- En Proceso: Amarillo/Amber (como Prestadas) -->
+                        <div class="bg-yellow-100 dark:bg-yellow-900 p-6 rounded-2xl shadow-xl border-l-4 border-yellow-500 hover:shadow-2xl transition duration-300">
+                            <p class="text-sm font-semibold text-yellow-700 dark:text-yellow-300 uppercase tracking-wider">En Proceso</p>
+                            <p class="text-5xl font-extrabold text-yellow-800 dark:text-yellow-100 mt-2">
+                                {{ $inProgressProjects ?? 'N/A' }}
+                            </p>
+                            <a href="{{ route('projects.index', ['status' => 'En proceso']) }}" class="text-yellow-700 dark:text-yellow-300 hover:underline text-sm mt-3 block font-medium">Ver en proceso</a>
+                        </div>
+                        <!-- Terminados: Verde (como Disponibles) -->
+                        <div class="bg-green-100 dark:bg-green-900 p-6 rounded-2xl shadow-xl border-l-4 border-green-500 hover:shadow-2xl transition duration-300">
+                            <p class="text-sm font-semibold text-green-700 dark:text-green-300 uppercase tracking-wider">Terminados</p>
+                            <p class="text-5xl font-extrabold text-green-800 dark:text-green-100 mt-2">
+                                {{ $completedProjects ?? 'N/A' }}
+                            </p>
+                            <a href="{{ route('projects.index', ['status' => 'Terminado']) }}" class="text-green-700 dark:text-green-300 hover:underline text-sm mt-3 block font-medium">Ver terminados</a>
+                        </div>
+                        <!-- En espera de piezas: Rojo (como Averiadas) -->
+                        <div class="bg-red-100 dark:bg-red-900 p-6 rounded-2xl shadow-xl border-l-4 border-red-500 hover:shadow-2xl transition duration-300">
+                            <p class="text-sm font-semibold text-red-700 dark:text-red-300 uppercase tracking-wider">En espera de piezas</p>
+                            <p class="text-5xl font-extrabold text-red-800 dark:text-red-100 mt-2">
+                                {{ $blockedProjects ?? 'N/A' }}
+                            </p>
+                            <a href="{{ route('projects.index', ['status' => 'En espera de piezas']) }}" class="text-red-700 dark:text-red-300 hover:underline text-sm mt-3 block font-medium">Ver en espera</a>
+                        </div>
+                    </div>
 
-                    <div class="mt-6">
+                    <div class="mt-10">
                         <h4 class="text-2xl font-bold mb-6 text-gray-700 dark:text-gray-300">Acciones rápidas</h4>
                         <div class="flex flex-wrap gap-4">
                             
@@ -69,6 +110,22 @@
                             <a href="{{ route('tools.index') }}" class="flex items-center bg-gray-200 hover:bg-gray-300 text-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white font-bold py-3 px-6 rounded-xl shadow-lg transition duration-150 transform hover:scale-[1.02]">
                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
                                 Revisar inventario
+                            </a>
+                            <a href="{{ route('projects.index') }}" class="flex items-center bg-gray-200 hover:bg-gray-300 text-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white font-bold py-3 px-6 rounded-xl shadow-lg transition duration-150 transform hover:scale-[1.02]">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M5 11h14M7 15h10"></path></svg>
+                                Ver proyectos
+                            </a>
+                            <a href="{{ route('projects.index', ['status' => 'En proceso']) }}" class="flex items-center bg-amber-200 hover:bg-amber-300 text-amber-900 dark:bg-amber-700 dark:hover:bg-amber-600 dark:text-white font-bold py-3 px-6 rounded-xl shadow-lg transition duration-150 transform hover:scale-[1.02]">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v8m-4-4h8"></path></svg>
+                                Proyectos en proceso
+                            </a>
+                            <a href="{{ route('projects.index', ['status' => 'Terminado']) }}" class="flex items-center bg-green-200 hover:bg-green-300 text-green-900 dark:bg-green-700 dark:hover:bg-green-600 dark:text-white font-bold py-3 px-6 rounded-xl shadow-lg transition duration-150 transform hover:scale-[1.02]">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"></path></svg>
+                                Proyectos terminados
+                            </a>
+                            <a href="{{ route('projects.index', ['status' => 'En espera de piezas']) }}" class="flex items-center bg-blue-200 hover:bg-blue-300 text-blue-900 dark:bg-blue-700 dark:hover:bg-blue-600 dark:text-white font-bold py-3 px-6 rounded-xl shadow-lg transition duration-150 transform hover:scale-[1.02]">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6"></path></svg>
+                                En espera de piezas
                             </a>
                         </div>
                     </div>

@@ -20,32 +20,32 @@
             {{-- ---------------------------------------------------- --}}
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
 
-                {{-- 1. Tarjeta: Total de proyectos (COLOR NARANJA PRINCIPAL) --}}
-                <div class="bg-white dark:bg-gray-700 p-6 rounded-2xl shadow-xl border-l-4 border-orange-500 dark:border-amber-400 transition hover:shadow-2xl">
+                {{-- 1. Tarjeta: Total de proyectos (AZUL) --}}
+                <div class="bg-white dark:bg-gray-700 p-6 rounded-2xl shadow-xl border-l-4 border-blue-500 dark:border-blue-400 transition hover:shadow-2xl">
                     <p class="text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Total Registrados</p>
                     <p class="text-4xl font-extrabold text-gray-900 dark:text-white mt-1">
                         {{ $totalProjects ?? 0 }}
                     </p>
                 </div>
 
-                {{-- 2. Tarjeta: Proyectos en progreso (COLOR ÁMBAR/AMARILLO CÁLIDO) --}}
-                <div class="bg-white dark:bg-gray-700 p-6 rounded-2xl shadow-xl border-l-4 border-orange-500 dark:border-amber-400 transition hover:shadow-2xl">
+                {{-- 2. Tarjeta: Proyectos en progreso (AMARILLO/ÁMBAR) --}}
+                <div class="bg-white dark:bg-gray-700 p-6 rounded-2xl shadow-xl border-l-4 border-yellow-500 dark:border-amber-400 transition hover:shadow-2xl">
                     <p class="text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">En Progreso</p>
                     <p class="text-4xl font-extrabold text-gray-900 dark:text-white mt-1">
                         {{ $inProgressProjects ?? 0 }}
                     </p>
                 </div>
 
-                {{-- 3. Tarjeta: Proyectos completados (COLOR VERDE - ÉXITO) --}}
-                <div class="bg-white dark:bg-gray-700 p-6 rounded-2xl shadow-xl border-l-4 border-orange-500 dark:border-amber-400 transition hover:shadow-2xl">
+                {{-- 3. Tarjeta: Proyectos completados (VERDE) --}}
+                <div class="bg-white dark:bg-gray-700 p-6 rounded-2xl shadow-xl border-l-4 border-green-500 dark:border-green-400 transition hover:shadow-2xl">
                     <p class="text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Completados</p>
                     <p class="text-4xl font-extrabold text-gray-900 dark:text-white mt-1">
                         {{ $completedProjects ?? 0 }}
                     </p>
                 </div>
 
-                {{-- 4. Tarjeta: Proyectos bloqueados/riesgo (COLOR ROJO - ALERTA) --}}
-                <div class="bg-white dark:bg-gray-700 p-6 rounded-2xl shadow-xl border-l-4 border-orange-500 dark:border-amber-400 transition hover:shadow-2xl">
+                {{-- 4. Tarjeta: Proyectos bloqueados/riesgo (ROJO) --}}
+                <div class="bg-white dark:bg-gray-700 p-6 rounded-2xl shadow-xl border-l-4 border-red-500 dark:border-red-400 transition hover:shadow-2xl">
                     <p class="text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Bloqueados / Riesgo</p>
                     <p class="text-4xl font-extrabold text-gray-900 dark:text-white mt-1">
                         {{ $blockedProjects ?? 0 }}
@@ -71,6 +71,37 @@
                             Añadir nuevo proyecto
                         </a>
                     </div>
+
+                    <form method="GET" action="{{ route('projects.index') }}" class="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div>
+                            <label for="q" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Buscar por nombre</label>
+                            <input id="q" type="text" name="q" value="{{ request('q') }}" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200" placeholder="ej. Cambio de aceite...">
+                        </div>
+                        <div>
+                            <label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Estado</label>
+                            <select id="status" name="status" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200">
+                                <option value="">Todos</option>
+                                @foreach(($statuses ?? []) as $st)
+                                    <option value="{{ $st }}" @selected(request('status')===$st)>{{ $st }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="flex items:end">
+                            <button type="submit" class="bg-orange-600 hover:bg-orange-700 dark:bg-amber-500 dark:hover:bg-amber-600 text-white font-bold py-2 px-4 rounded-xl shadow-md">Filtrar</button>
+                            <a href="{{ route('projects.index') }}" class="ml-3 text-gray-600 dark:text-gray-300 hover:underline">Limpiar</a>
+                        </div>
+                        @if(($users ?? collect())->isNotEmpty())
+                        <div>
+                            <label for="user_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Responsable (solo admin)</label>
+                            <select id="user_id" name="user_id" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200">
+                                <option value="">Todos</option>
+                                @foreach($users as $u)
+                                    <option value="{{ $u->id }}" @selected(request('user_id')==$u->id)>{{ $u->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        @endif
+                    </form>
 
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -122,8 +153,8 @@
                                             {{ $project->status }}
                                         </span>
                                     </td>
-                                    {{-- Asumiendo una relación 'owner' (líder del proyecto) --}}
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ $project->owner->name ?? 'N/A' }}</td>
+                                    {{-- Responsable: relación definida como assignedTo() en el modelo --}}
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ $project->assignedTo->name ?? 'N/A' }}</td>
 
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium flex space-x-2">
                                         {{-- Enlace Editar con color naranja --}}
@@ -133,6 +164,7 @@
                                         <button
                                             type="button"
                                             class="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 font-bold transition duration-150 delete-project-btn"
+                                            title="Borrar proyecto"
                                             data-project-id="{{ $project->id }}"
                                             data-project-name="{{ $project->name }}"
                                         >

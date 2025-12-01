@@ -35,18 +35,21 @@
                             <x-input-label for="status" :value="__('Estado Actual')" />
                             <!-- Aplicamos estilos del input a Select -->
                             <select id="status" name="status" class="mt-1 border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-orange-500 dark:focus:border-amber-400 focus:ring-orange-500 dark:focus:ring-amber-400 rounded-lg shadow-sm block w-full" required>
-                                <option value="Operativa" {{ old('status') == 'Operativa' ? 'selected' : '' }}>Operativa</option>
-                                <option value="Averiada" {{ old('status') == 'Averiada' ? 'selected' : '' }}>Averiada</option>
-                                <option value="Prestada" {{ old('status') == 'Prestada' ? 'selected' : '' }}>Prestada</option>
+                                <option value="Operativa"   {{ old('status') == 'Operativa' ? 'selected' : '' }}>Operativa</option>
+                                <option value="Disponible"  {{ old('status') == 'Disponible' ? 'selected' : '' }}>Disponible</option>
+                                <option value="Prestada"    {{ old('status') == 'Prestada' ? 'selected' : '' }}>Prestada</option>
+                                <option value="En Uso"      {{ old('status') == 'En Uso' ? 'selected' : '' }}>En Uso</option>
+                                <option value="Averiada"    {{ old('status') == 'Averiada' ? 'selected' : '' }}>Averiada</option>
+                                <option value="Mantenimiento" {{ old('status') == 'Mantenimiento' ? 'selected' : '' }}>Mantenimiento</option>
+                                <option value="Rota"        {{ old('status') == 'Rota' ? 'selected' : '' }}>Rota</option>
                             </select>
                             <x-input-error class="mt-2" :messages="$errors->get('status')" />
                         </div>
 
                         <!-- Campo Asignar Usuario -->
                         <div>
-                            <x-input-label for="user_id" :value="__('Asignar a Usuario (Opcional)')" />
-                            <select id="user_id" name="user_id" class="mt-1 border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-orange-500 dark:focus:border-amber-400 focus:ring-orange-500 dark:focus:ring-amber-400 rounded-lg shadow-sm block w-full">
-                                <option value="" {{ old('user_id') === null ? 'selected' : '' }}>Sin Asignar</option>
+                            <x-input-label for="user_id" :value="__('Asignar a Usuario')" />
+                            <select id="user_id" name="user_id" required class="mt-1 border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-orange-500 dark:focus:border-amber-400 focus:ring-orange-500 dark:focus:ring-amber-400 rounded-lg shadow-sm block w-full">
                                 @foreach ($users as $user)
                                     <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
                                         {{ $user->name }}

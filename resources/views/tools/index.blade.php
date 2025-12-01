@@ -68,6 +68,37 @@
                         </a>
                     </div>
 
+                    <form method="GET" action="{{ route('tools.index') }}" class="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label for="q" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Buscar por nombre</label>
+                            <input id="q" type="text" name="q" value="{{ request('q') }}" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200" placeholder="ej. Taladro, Llave...">
+                        </div>
+                        <div>
+                            <label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Estado</label>
+                            <select id="status" name="status" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200">
+                                <option value="">Todos</option>
+                                @foreach(($statuses ?? []) as $st)
+                                    <option value="{{ $st }}" @selected(request('status')===$st)>{{ $st }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="flex items-end">
+                            <button type="submit" class="bg-orange-600 hover:bg-orange-700 dark:bg-amber-500 dark:hover:bg-amber-600 text-white font-bold py-2 px-4 rounded-xl shadow-md">Filtrar</button>
+                            <a href="{{ route('tools.index') }}" class="ml-3 text-gray-600 dark:text-gray-300 hover:underline">Limpiar</a>
+                        </div>
+                        @if(($users ?? collect())->isNotEmpty())
+                        <div>
+                            <label for="user_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Asignado a (solo admin)</label>
+                            <select id="user_id" name="user_id" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200">
+                                <option value="">Todos</option>
+                                @foreach($users as $u)
+                                    <option value="{{ $u->id }}" @selected(request('user_id')==$u->id)>{{ $u->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        @endif
+                    </form>
+
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                             <thead class="bg-gray-50 dark:bg-gray-700">
@@ -86,9 +117,13 @@
                                     echo '<span class="hidden bg-green-100 text-green-800 bg-red-100 text-red-800 bg-yellow-100 text-yellow-800 dark:bg-green-900 dark:text-green-300 dark:bg-red-900 dark:text-red-300 dark:bg-yellow-900 dark:text-yellow-300"></span>';
 
                                     $statusColors = [
-                                        'Operativa' => ['bg' => 'bg-green-100', 'text' => 'text-green-800', 'dark_bg' => 'dark:bg-green-900', 'dark_text' => 'dark:text-green-300'],
-                                        'Averiada' => ['bg' => 'bg-red-100', 'text' => 'text-red-800', 'dark_bg' => 'dark:bg-red-900', 'dark_text' => 'dark:text-red-300'],
-                                        'Prestada' => ['bg' => 'bg-yellow-100', 'text' => 'text-yellow-800', 'dark_bg' => 'dark:bg-yellow-900', 'dark_text' => 'dark:text-yellow-300'],
+                                        'Operativa'   => ['bg' => 'bg-green-100', 'text' => 'text-green-800', 'dark_bg' => 'dark:bg-green-900', 'dark_text' => 'dark:text-green-300'],
+                                        'Disponible'  => ['bg' => 'bg-green-100', 'text' => 'text-green-800', 'dark_bg' => 'dark:bg-green-900', 'dark_text' => 'dark:text-green-300'],
+                                        'Averiada'    => ['bg' => 'bg-red-100',   'text' => 'text-red-800',   'dark_bg' => 'dark:bg-red-900',   'dark_text' => 'dark:text-red-300'],
+                                        'Mantenimiento'=>['bg' => 'bg-red-100',   'text' => 'text-red-800',   'dark_bg' => 'dark:bg-red-900',   'dark_text' => 'dark:text-red-300'],
+                                        'Rota'        => ['bg' => 'bg-red-100',   'text' => 'text-red-800',   'dark_bg' => 'dark:bg-red-900',   'dark_text' => 'dark:text-red-300'],
+                                        'Prestada'    => ['bg' => 'bg-yellow-100','text' => 'text-yellow-800','dark_bg' => 'dark:bg-yellow-900','dark_text' => 'dark:text-yellow-300'],
+                                        'En Uso'      => ['bg' => 'bg-yellow-100','text' => 'text-yellow-800','dark_bg' => 'dark:bg-yellow-900','dark_text' => 'dark:text-yellow-300'],
                                     ];
                                 @endphp
 
@@ -113,10 +148,10 @@
                                         <a href="{{ route('tools.edit', $tool->id) }}" class="text-orange-600 dark:text-amber-400 hover:text-orange-800 dark:hover:text-amber-300 font-bold transition duration-150">Editar</a>
 
                                         <!-- Formulario de Borrado con confirmación simple -->
-                                        <form action="{{ route('tools.destroy', $tool->id) }}" method="POST" class="inline">
+                                        <form action="{{ route('tools.destroy', $tool->id) }}" method="POST" class="inline" title="Borrar herramienta">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="text-red-600 hover:text-red-800 font-bold transition duration-150"
+                                            <button type="submit" class="text-red-600 hover:text-red-800 font-bold transition duration-150" title="Borrar '{{ $tool->name }}'"
                                                 onclick="return confirm('¿Estás seguro de que quieres eliminar la herramienta: {{ $tool->name }}? Esta acción es irreversible.');">
                                                 Borrar
                                             </button>
@@ -131,6 +166,13 @@
                             </tbody>
                         </table>
                     </div>
+
+                    {{-- Paginación: mostrar si el listado está paginado --}}
+                    @if (isset($tools) && method_exists($tools, 'hasPages') && $tools->hasPages())
+                        <div class="mt-6 p-4 border-t-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 rounded-b-lg">
+                            {{ $tools->links() }}
+                        </div>
+                    @endif
 
                 </div>
             </div>

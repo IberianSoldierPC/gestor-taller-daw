@@ -27,7 +27,8 @@ class UserFactory extends Factory
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
+            // Use hashed cast on the model to hash this plain value
+            'password' => static::$password ??= 'password',
             'remember_token' => Str::random(10),
             // Eliminamos el valor fijo aquí. El rol por defecto ('employee')
             // se define en la migración de la base de datos.

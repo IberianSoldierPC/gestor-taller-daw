@@ -11,131 +11,115 @@ use Illuminate\Http\RedirectResponse;
 
 class ToolController extends Controller
 {
-    /**
-     * Muestra la lista de herramientas, incluyendo estadísticas para la vista (tools.index).
-     */
-    public function index(): View
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+    public function index(Request $request): View
     {
         $user = Auth::user();
 
-        // 1. Construir la consulta de herramientas base con Eager Loading
-        $query = Tool::with('user')->orderBy('name', 'asc');
+        $query = Tool::with('user');
 
-        // Aplicar filtro si el usuario no es 'admin'
+        // Filtros: búsqueda por nombre y estado
+        if ($search = trim((string) $request->query('q'))) {
+            $query->where('name', 'like', '%' . $search . '%');
+        }
+
+        if ($status = trim((string) $request->query('status'))) {
+            $query->where('status', $status);
+        }
+
+        // Filtro por usuario asignado (solo visible para admin)
+        if ($user->role === 'admin' && ($userId = $request->query('user_id'))) {
+            $query->where('user_id', $userId);
+        }
+
+        $query->orderBy('name', 'asc');
+
         if ($user->role !== 'admin') {
             $query->where('user_id', $user->id);
         }
 
-        // CORRECCIÓN CLAVE: Aplicar paginación (ej. 10 elementos por página)
-        // Esto convierte $tools en un objeto Paginator que la vista necesita.
-        $tools = $query->paginate(10);
+        $tools = $query->paginate(10)->withQueryString();
 
-        // 2. CÁLCULO DE ESTADÍSTICAS (Estas no se ven afectadas por la paginación)
         $totalTools = Tool::count();
-        $availableTools = Tool::where('status', 'Operativa')->count();
-        $loanedTools = Tool::where('status', 'Prestada')->count();
-        // Suma Averiada y cualquier otro estado que signifique fuera de servicio
+        $availableTools = Tool::whereIn('status', ['Operativa', 'Disponible'])->count();
+        $loanedTools = Tool::whereIn('status', ['Prestada', 'En Uso'])->count();
         $brokenTools = Tool::whereIn('status', ['Averiada', 'Mantenimiento', 'Rota'])->count();
-        
-        // 3. Pasar todas las variables necesarias a la vista
-        return view('tools.index', compact('tools', 'totalTools', 'availableTools', 'loanedTools', 'brokenTools'));
+
+        $statuses = ['Operativa','Disponible','Prestada','En Uso','Averiada','Mantenimiento','Rota'];
+        $users = ($user->role === 'admin') ? User::orderBy('name')->get(['id','name']) : collect();
+        return view('tools.index', compact('tools', 'totalTools', 'availableTools', 'loanedTools', 'brokenTools', 'statuses', 'users'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create(): View
     {
-        // Llamada a \App\Models\User con el FQCN o importando User
+        $this->authorize('create', Tool::class);
         $users = User::orderBy('name')->get(['id', 'name']);
         return view('tools.create', compact('users'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request): RedirectResponse
     {
-        // 1. Validación de datos
+        $this->authorize('create', Tool::class);
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'location' => 'required|string|max:255',
-            'status' => 'required|in:Operativa,Averiada,Prestada',
+            // Aceptar todos los estados usados en el sistema/vistas/seeders
+            'status' => 'required|in:Operativa,Disponible,Averiada,Prestada,En Uso,Mantenimiento,Rota',
             'acquisition_date' => 'required|date',
             'user_id' => 'required|exists:users,id',
             'description' => 'nullable|string',
         ]);
 
-        // 2. Creación del recurso
         Tool::create($validatedData);
 
-        // 3. Redirección con mensaje de éxito
         return redirect()->route('tools.index')->with('status', 'Herramienta creada con éxito.');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
-        // Este método no está implementado en tu código, se mantiene vacío
+        // No utilizado en este módulo
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id): View
     {
-        // Encuentra la herramienta por su ID o falla con 404
         $tool = Tool::findOrFail($id);
-        
-        // Obtiene todos los usuarios para el campo de asignación
+        $this->authorize('update', $tool);
         $users = User::orderBy('name')->get(['id', 'name']);
-
-        // Carga la vista de edición con la herramienta y los usuarios
         return view('tools.edit', compact('tool', 'users'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id): RedirectResponse
     {
-        // 1. Encuentra la herramienta por su ID o falla con 404
         $tool = Tool::findOrFail($id);
+        $this->authorize('update', $tool);
 
-        // 2. Validación de datos
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'location' => 'required|string|max:255',
-            'status' => 'required|in:Operativa,Averiada,Prestada',
+            // Aceptar todos los estados usados en el sistema/vistas/seeders
+            'status' => 'required|in:Operativa,Disponible,Averiada,Prestada,En Uso,Mantenimiento,Rota',
             'acquisition_date' => 'required|date',
             'user_id' => 'required|exists:users,id',
             'description' => 'nullable|string',
         ]);
 
-        // 3. Actualización del recurso
         $tool->update($validatedData);
 
-        // 4. Redirección con mensaje de éxito
         return redirect()->route('tools.index')->with('status', 'Herramienta actualizada con éxito.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id): RedirectResponse
     {
-        // 1. Encontrar la herramienta. Si no existe, lanza un 404.
         $tool = Tool::findOrFail($id);
+        $this->authorize('delete', $tool);
 
-        // 2. Guardar el nombre antes de eliminar (para el mensaje de éxito)
         $toolName = $tool->name;
-
-        // 3. ¡Eliminar la herramienta!
         $tool->delete();
 
-        // 4. Redirigir a la lista con un mensaje de éxito.
         return redirect()->route('tools.index')
                              ->with('status', 'Herramienta "' . $toolName . '" eliminada correctamente.');
     }
