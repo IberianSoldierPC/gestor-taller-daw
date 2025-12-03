@@ -9,31 +9,42 @@
 
 
 
-# 🛠️ Gestor de Taller DAW
+# 🛠️ Gestor Taller DAW
 
-¡Bienvenido al repositorio del proyecto Gestor de Taller DAW! Esta es una aplicación web desarrollada con el framework Laravel para la gestión eficiente de proyectos (o trabajos en taller), materiales, herramientas y los pasos de construcción asociados.
-
-El objetivo principal es proporcionar una herramienta robusta para asignar trabajos a empleados, gestionar el inventario de herramientas y llevar un control detallado de las instrucciones paso a paso para cada proyecto.
+Aplicación Laravel para gestionar proyectos y herramientas de taller, con control de estados, asignaciones y administración de usuarios.
 
 
 # ✨ Características Principales
 
-+ **Gestión de Proyectos:** Creación, edición, visualización y eliminación de trabajos o tareas del taller.
++ **Proyectos**
+  - Estados: Pendiente, En proceso, Terminado, En espera de piezas, Urgente.
+  - Urgente como estado (no prioridad), visible en métricas y listados.
+  - Métricas por usuario: el usuario ve sus métricas; admin ve global.
+  - Asignación opcional: se pueden crear proyectos “Sin asignar” y asignar más tarde.
+  - Listado con badge de estado y chip “No asignado” cuando no tiene responsable.
+  - Ordenación: Más recientes primero por defecto; opción Alfabético (A→Z).
+  - Confirmación de borrado con modal estilizado; mensajes de éxito con auto-dismiss y cierre manual.
 
-+ **Roles de Usuario:** Diferenciación entre usuarios Administradores (acceso total, asignación) y Empleados (solo ven sus proyectos asignados).
++ **Herramientas**
+  - Estados: Disponible, En uso, Mantenimiento.
+  - Asignación opcional (user_id nullable) y “No asignado” en listados.
+  - Tooltip de descripción al pasar el cursor por el nombre.
+  - Ordenación: Más recientes primero (por defecto) y Alfabético (A→Z).
+  - Confirmación de borrado con modal estilizado; mensajes de éxito con auto-dismiss y cierre manual.
 
-+ **Detalle de Proyectos:**
++ **Administración de usuarios (solo admin)**
+  - Navegación: 👥 Gestión usuarios en menú principal (visible solo admin).
+  - Listado, edición y borrado de usuarios.
+  - Roles simplificados: Admin y Empleado; protección para evitar auto-eliminarse.
 
-  + **Materiales:** Listado dinámico de materiales necesarios (nombre, cantidad, notas).
-
-  + **Herramientas:** Asociación Many-to-Many de herramientas requeridas.
-
-  + **Pasos de Construcción:** Guía paso a paso con instrucciones detalladas y soporte para imágenes por cada paso.
-
-+ **Control de Estado y Prioridad:** Clasificación de proyectos por pendiente, en_proceso, terminado, etc.
++ **Branding y UX**
+  - Título del sitio y pestaña: Gestor Taller DAW (APP_NAME configurable).
+  - Favicon SVG martillo/llave inglesa y fallback favicon.ico para compatibilidad.
+  - Navegación con iconos: 🏠 Panel, 🔧 Herramientas, 📁 Proyectos, 👥 Gestión usuarios.
+  - Panel sin “encajonado”, sombras y espaciado pulidos.
 
 
-# 🚀 Requisitos del Sistema
+## 🚀 Requisitos del Sistema
 
 - PHP => 8.2
 
@@ -43,7 +54,7 @@ El objetivo principal es proporcionar una herramienta robusta para asignar traba
 
 - Una base de datos MySQL. Se recomienda XAMPP.
 
-# ⚙️ Instalación y Configuración
+## ⚙️ Instalación y Configuración
 
 Sigue estos pasos para poner en marcha el proyecto en tu entorno local.
 
@@ -106,13 +117,48 @@ npm run build
 
 Inicia el servidor de desarrollo de Laravel:
 
+```pwsh
 php artisan serve
+```
 
+Abre tu navegador y navega a `http://localhost:8000`.
 
-Abre tu navegador y navega a http://localhost:8000.
+### Limpieza de cachés (si cambias APP_NAME o favicon)
 
+```pwsh
+php artisan config:clear
+php artisan view:clear
+php artisan route:clear
+php artisan cache:clear
+```
 
+### Migraciones relevantes
 
-## 🤝 ***Colaboración***
+- BD preparada para asignaciones nulas:
+  - `tools.user_id` nullable con `nullOnDelete`.
+  - `projects.assigned_to_user_id` nullable (si aplica), con `set null` al borrar usuario.
 
-Si deseas contribuir o reportar un error, por favor, abre un ***issue*** o envía un ***pull request***.
+### Ordenación
+
+- Controladores aceptan `?sort=alpha` para A→Z; por defecto `created_at` DESC.
+
+### Favicon
+
+- `public/favicon.svg` (martillo/llave inglesa) y `public/favicon.ico` como fallback.
+ 
+ 
+ 
+## 🤝 Colaboración
+
+Si deseas contribuir o reportar un error, por favor, abre un issue o envía un pull request.
+
+## 🧪 Pruebas
+
+Ejecuta la suite:
+
+```pwsh
+php artisan test
+```
+
+- Validación de reglas de autorización: solo propietario o admin pueden actualizar/borrar herramientas y proyectos.
+- Pruebas ajustadas para esperar `403 Forbidden` en usuarios sin permisos.
