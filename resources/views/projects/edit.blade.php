@@ -7,18 +7,18 @@
         </h2>
     </x-slot>
 
-    {{-- Contenedor de la vista --}}
+    {{-- Contenedor --}}
     <div class="py-8 md:py-12 bg-gray-50 dark:bg-gray-900">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             
-            <!-- Contenedor principal con estilo de tarjeta mejorado -->
+            <!-- Contenedor principal -->
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl lg:shadow-2xl sm:rounded-2xl p-6 md:p-10 border border-gray-100 dark:border-gray-700 transition duration-300">
 
                 <h3 class="text-3xl font-extrabold mb-8 border-b-2 border-gray-200 dark:border-gray-700 pb-3 text-gray-800 dark:text-gray-100">
-                    Información del Proyecto
+                    Información del proyecto
                 </h3>
 
-                {{-- Formulario de edición --}}
+                {{-- Formulario --}}
                 <form method="POST" action="{{ route('projects.update', $project) }}">
                     @csrf
                     @method('PUT')
@@ -35,11 +35,13 @@
                             @enderror
                         </div>
 
-                        {{-- Campo asignado a (assigned_to_user_id) --}}
+                        {{-- Campo asignado a (solo admin) --}}
+                        @if(auth()->user() && auth()->user()->role === 'admin')
                         <div>
                             <label for="assigned_to_user_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Asignado a</label>
-                            <select name="assigned_to_user_id" id="assigned_to_user_id" required
+                            <select name="assigned_to_user_id" id="assigned_to_user_id"
                                 class="w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition duration-150">
+                                <option value="" {{ old('assigned_to_user_id', $project->assigned_to_user_id) == null ? 'selected' : '' }}>Sin asignar</option>
                                 @foreach ($users as $user)
                                     <option value="{{ $user->id }}"
                                         {{ old('assigned_to_user_id', $project->assigned_to_user_id) == $user->id ? 'selected' : '' }}>
@@ -51,14 +53,15 @@
                                 <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                             @enderror
                         </div>
+                        @endif
 
-                        {{-- Campo estatus --}}
+                        {{-- Campo estado --}}
                         <div>
-                            <label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Estatus</label>
+                            <label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Estado</label>
                             <select name="status" id="status" required
                                 class="w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition duration-150">
                                 @php
-                                    $statuses = ['Pendiente', 'En proceso', 'Terminado', 'En espera de piezas'];
+                                    $statuses = ['Pendiente', 'En proceso', 'Terminado', 'En espera de piezas','Urgente'];
                                 @endphp
                                 @foreach ($statuses as $status)
                                     <option value="{{ $status }}"
@@ -72,27 +75,9 @@
                             @enderror
                         </div>
 
-                        {{-- Campo prioridad --}}
-                        <div>
-                            <label for="priority" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Prioridad</label>
-                            <select name="priority" id="priority" required
-                                class="w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition duration-150">
-                                @php
-                                    $priorities = ['Baja', 'Media', 'Alta', 'Urgente'];
-                                @endphp
-                                @foreach ($priorities as $priority)
-                                    <option value="{{ $priority }}"
-                                        {{ old('priority', $project->priority) == $priority ? 'selected' : '' }}>
-                                        {{ $priority }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('priority')
-                                <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
-                            @enderror
-                        </div>
+
                         
-                        {{-- Campo Fecha de vencimiento --}}
+                        {{-- Campo fecha de vencimiento --}}
                         <div class="sm:col-span-2">
                             <label for="due_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Fecha de vencimiento (opcional)</label>
                             <input type="date" name="due_date" id="due_date" value="{{ old('due_date', $project->due_date ? date('Y-m-d', strtotime($project->due_date)) : '') }}"
@@ -102,7 +87,7 @@
                             @enderror
                         </div>
 
-                        {{-- Campo descripción (ocupa dos columnas) --}}
+                        {{-- Campo descripción --}}
                         <div class="sm:col-span-2">
                             <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Descripción</label>
                             <textarea name="description" id="description" rows="4"
@@ -113,12 +98,12 @@
                         </div>
                     </div>
                     
-                    {{-- Separador y Herramientas --}}
+                    {{-- Herramientas --}}
                     <h3 class="text-xl font-bold mt-10 mb-4 border-b border-gray-200 dark:border-gray-700 pb-2 text-gray-800 dark:text-gray-100">
-                        Herramientas Asignadas
+                        Herramientas asignadas
                     </h3>
 
-                    {{-- Lista de Herramientas (checkboxes) --}}
+                    {{-- Lista de herramientas --}}
                     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
                         @foreach ($tools as $tool)
                             <label class="flex items-center space-x-2 text-sm text-gray-700 dark:text-gray-300 cursor-pointer p-2 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-indigo-50 dark:hover:bg-gray-700 transition duration-150">
@@ -133,7 +118,7 @@
                         <p class="mt-1 mb-4 text-sm text-red-500">{{ $message }}</p>
                     @enderror
 
-                    {{-- Botón de guardar --}}
+                    {{-- Botón guardar --}}
                     <div class="flex justify-end mt-6">
                         <button type="submit"
                             class="inline-flex items-center px-6 py-3 bg-indigo-600 border border-transparent rounded-full font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150 shadow-lg hover:shadow-xl">
@@ -146,3 +131,48 @@
         </div>
     </div>
 </x-app-layout>
+
+<!-- Modal de confirmación de edición de proyecto -->
+<div id="confirmEditProjectModal" class="fixed inset-0 bg-gray-600 dark:bg-gray-900 bg-opacity-50 dark:bg-opacity-75 overflow-y-auto h-full w-full hidden z-50">
+    <div class="relative top-20 mx-auto p-5 border-2 border-gray-300 dark:border-gray-600 w-96 shadow-2xl rounded-xl bg-white dark:bg-gray-800 transform transition-all duration-300">
+        <div class="mt-3 text-center">
+            <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-indigo-100 dark:bg-indigo-900/30 border-2 border-indigo-300 dark:border-indigo-700 mb-4">
+                <svg class="h-8 w-8 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+            </div>
+            <h3 class="text-xl leading-6 font-extrabold text-gray-900 dark:text-white mt-2">Confirmar actualización</h3>
+            <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">¿Quieres guardar los cambios de este proyecto?</p>
+            <div class="items-center px-4 py-3 flex justify-end space-x-3 mt-4">
+                <button id="cancelEditProjectBtn" class="flex-1 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-base font-medium rounded-lg shadow-sm hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 transition duration-150 border border-gray-300 dark:border-gray-600">Cancelar</button>
+                <button id="confirmEditProjectBtn" class="flex-1 px-4 py-2 bg-indigo-600 dark:bg-indigo-700 text-white text-base font-medium rounded-lg shadow-sm hover:bg-indigo-700 dark:hover:bg-indigo-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 transition duration-150 border border-indigo-700 dark:border-indigo-600">Confirmar</button>
+            </div>
+        </div>
+    </div>
+    </div>
+
+<script>
+    // Interceptar submit para mostrar modal
+    (function() {
+        const form = document.querySelector('form[action*="projects/update"], form[action*="/projects/"]');
+        if (!form) return;
+        const methodInput = form.querySelector('input[name="_method"]');
+        if (!methodInput || methodInput.value.toUpperCase() !== 'PUT') return;
+        let pendingSubmitEvent = null;
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            pendingSubmitEvent = e;
+            document.getElementById('confirmEditProjectModal').classList.remove('hidden');
+        });
+        document.getElementById('cancelEditProjectBtn').addEventListener('click', () => {
+            document.getElementById('confirmEditProjectModal').classList.add('hidden');
+            pendingSubmitEvent = null;
+        });
+        document.getElementById('confirmEditProjectBtn').addEventListener('click', () => {
+            document.getElementById('confirmEditProjectModal').classList.add('hidden');
+            if (pendingSubmitEvent) {
+                pendingSubmitEvent.target.submit();
+            }
+        });
+    })();
+</script>

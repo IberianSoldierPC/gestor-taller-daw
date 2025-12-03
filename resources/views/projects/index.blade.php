@@ -7,28 +7,52 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            {{-- Mensaje de estado (éxito/error) --}}
+            {{-- Mensaje de estado --}}
             @if (session('status'))
-            <div class="bg-green-100 dark:bg-green-900/30 border border-green-400 dark:border-green-700 text-green-700 dark:text-green-400 px-4 py-3 rounded-lg relative mb-4 shadow-md" role="alert">
+            <div id="flash-status" class="bg-green-100 dark:bg-green-900/30 border border-green-400 dark:border-green-700 text-green-700 dark:text-green-400 px-4 py-3 rounded-lg relative mb-4 shadow-md transition-opacity duration-700" role="alert">
                 <span class="block sm:inline">{{ session('status') }}</span>
+                <button type="button" id="flash-close" aria-label="Cerrar aviso" class="absolute top-2 right-2 text-green-700 dark:text-green-400 hover:text-green-900 dark:hover:text-green-200 font-bold">×</button>
             </div>
+            <script>
+                // Auto-ocultar aviso de estado después de unos segundos
+                setTimeout(() => {
+                    const el = document.getElementById('flash-status');
+                    if (el) {
+                        el.style.opacity = '0';
+                        setTimeout(() => el.remove(), 800);
+                    }
+                }, 3000);
+                // Cierre manual del aviso
+                document.getElementById('flash-close')?.addEventListener('click', () => {
+                    const el = document.getElementById('flash-status');
+                    if (el) el.remove();
+                });
+            </script>
             @endif
 
 
-            {{-- Tarjetas de estadísticas de proyectos --}}
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            {{-- Estadísticas de proyectos --}}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
 
                 {{-- Total de proyectos --}}
                 <div class="bg-white dark:bg-gray-700 p-6 rounded-2xl shadow-xl border-l-4 border-blue-500 dark:border-blue-400 transition hover:shadow-2xl">
-                    <p class="text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Total Registrados</p>
+                    <p class="text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider leading-tight min-h-[32px]">Total registrados</p>
                     <p class="text-4xl font-extrabold text-gray-900 dark:text-white mt-1">
                         {{ $totalProjects ?? 0 }}
                     </p>
                 </div>
 
+                {{-- En espera de piezas --}}
+                <div class="bg-white dark:bg-gray-700 p-6 rounded-2xl shadow-xl border-l-4 border-blue-500 dark:border-blue-400 transition hover:shadow-2xl">
+                    <p class="text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider leading-tight min-h-[32px]">En espera de piezas</p>
+                    <p class="text-4xl font-extrabold text-gray-900 dark:text-white mt-1">
+                        {{ $waitingProjects ?? 0 }}
+                    </p>
+                </div>
+
                 {{-- En progreso --}}
                 <div class="bg-white dark:bg-gray-700 p-6 rounded-2xl shadow-xl border-l-4 border-yellow-500 dark:border-amber-400 transition hover:shadow-2xl">
-                    <p class="text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">En Progreso</p>
+                    <p class="text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider leading-tight min-h-[32px]">En progreso</p>
                     <p class="text-4xl font-extrabold text-gray-900 dark:text-white mt-1">
                         {{ $inProgressProjects ?? 0 }}
                     </p>
@@ -36,17 +60,17 @@
 
                 {{-- Completados --}}
                 <div class="bg-white dark:bg-gray-700 p-6 rounded-2xl shadow-xl border-l-4 border-green-500 dark:border-green-400 transition hover:shadow-2xl">
-                    <p class="text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Completados</p>
+                    <p class="text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider leading-tight min-h-[32px]">Completados</p>
                     <p class="text-4xl font-extrabold text-gray-900 dark:text-white mt-1">
                         {{ $completedProjects ?? 0 }}
                     </p>
                 </div>
 
-                {{-- Bloqueados / Riesgo --}}
+                {{-- Urgentes --}}
                 <div class="bg-white dark:bg-gray-700 p-6 rounded-2xl shadow-xl border-l-4 border-red-500 dark:border-red-400 transition hover:shadow-2xl">
-                    <p class="text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Bloqueados / Riesgo</p>
+                    <p class="text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider leading-tight min-h-[32px]">Urgentes</p>
                     <p class="text-4xl font-extrabold text-gray-900 dark:text-white mt-1">
-                        {{ $blockedProjects ?? 0 }}
+                        {{ $urgentProjects ?? 0 }}
                     </p>
                 </div>
 
@@ -57,9 +81,9 @@
                 <div class="p-6 text-gray-900 dark:text-gray-100">
 
                     <div class="flex justify-between items-center mb-6 border-b border-gray-200 dark:border-gray-700 pb-4">
-                        {{-- Título principal --}}
+                        {{-- Título --}}
                         <p class="text-2xl font-extrabold text-orange-600 dark:text-amber-400">Listado de proyectos</p>
-                        {{-- Botón de acción principal --}}
+                        {{-- Botón principal --}}
                         <a href="{{ route('projects.create') }}" class="bg-orange-600 hover:bg-orange-700 dark:bg-orange-500 dark:hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out transform hover:scale-105">
                             <svg class="w-5 h-5 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
@@ -68,7 +92,7 @@
                         </a>
                     </div>
 
-                    <form method="GET" action="{{ route('projects.index') }}" class="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <form method="GET" action="{{ route('projects.index') }}" class="mb-6 grid grid-cols-1 md:grid-cols-5 gap-4">
                         <div>
                             <label for="q" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Buscar por nombre</label>
                             <input id="q" type="text" name="q" value="{{ request('q') }}" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200" placeholder="ej. Cambio de aceite...">
@@ -82,7 +106,15 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="flex items:end">
+                        
+                        <div>
+                            <label for="sort" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Orden</label>
+                            <select id="sort" name="sort" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200">
+                                <option value="created" @selected(request('sort')==='created' || !request()->has('sort'))>Más recientes primero</option>
+                                <option value="alpha" @selected(request('sort')==='alpha')>Alfabético (A→Z)</option>
+                            </select>
+                        </div>
+                        <div class="flex items-end">
                             <button type="submit" class="bg-orange-600 hover:bg-orange-700 dark:bg-amber-500 dark:hover:bg-amber-600 text-white font-bold py-2 px-4 rounded-xl shadow-md">Filtrar</button>
                             <a href="{{ route('projects.index') }}" class="ml-3 text-gray-600 dark:text-gray-300 hover:underline">Limpiar</a>
                         </div>
@@ -107,7 +139,8 @@
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Fecha límite</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Estado</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Responsable</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Acciones</th>
+                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Herramientas</th>
+                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
@@ -119,6 +152,7 @@
                                 'En proceso' => ['bg' => 'bg-amber-100 dark:bg-amber-900/20', 'text' => 'text-amber-800 dark:text-amber-400'],
                                 'Pendiente' => ['bg' => 'bg-yellow-100 dark:bg-yellow-900/20', 'text' => 'text-yellow-800 dark:text-yellow-400'],
                                 'En espera de piezas' => ['bg' => 'bg-blue-100 dark:bg-blue-900/20', 'text' => 'text-blue-800 dark:text-blue-400'],
+                                'Urgente' => ['bg' => 'bg-red-100 dark:bg-red-900/20', 'text' => 'text-red-800 dark:text-red-400'],
                                 'Bloqueado' => ['bg' => 'bg-red-100 dark:bg-red-900/20', 'text' => 'text-red-800 dark:text-red-400'],
                                 'Cancelado' => ['bg' => 'bg-gray-100 dark:bg-gray-900/20', 'text' => 'text-gray-800 dark:text-gray-400'],
                                 ];
@@ -132,7 +166,7 @@
                                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition duration-100 border-b border-gray-200 dark:border-gray-700">
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">{{ $project->name }}</td>
                                     
-                                    {{-- Formateo de fecha más amigable (dd/mm/yyyy) --}}
+                                    {{-- Fecha (dd/mm/yyyy) --}}
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                         @if ($project->due_date)
                                             {{ date('d/m/Y', strtotime($project->due_date)) }}
@@ -147,29 +181,53 @@
                                         </span>
                                     </td>
                                     {{-- Responsable --}}
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ $project->assignedTo->name ?? 'N/A' }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                        @if(!empty($project->assigned_to_user_id) && isset($project->assignedTo))
+                                            {{ $project->assignedTo->name }}
+                                        @else
+                                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 dark:bg-gray-700/40 text-gray-700 dark:text-gray-300">No asignado</span>
+                                        @endif
+                                    </td>
 
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium flex space-x-2">
-                                        {{-- Enlace Editar --}}
-                                        <a href="{{ route('projects.edit', $project->id) }}" class="text-orange-600 dark:text-orange-400 hover:text-orange-900 dark:hover:text-orange-300 font-bold transition duration-150">Editar</a>
-
-                                        {{-- Botón eliminar --}}
-                                        <button
-                                            type="button"
-                                            class="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 font-bold transition duration-150 delete-project-btn"
-                                            title="Borrar proyecto"
-                                            data-delete-url="{{ route('projects.destroy', $project->id) }}"
-                                            data-project-name="{{ $project->name }}"
-                                        >
-                                            Borrar
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300 text-center">
+                                        <button type="button" class="text-indigo-600 dark:text-indigo-400 hover:underline toggle-tools-btn inline-block" data-project-id="{{ $project->id }}">
+                                            Ver herramientas
                                         </button>
+                                        <div id="project-tools-{{ $project->id }}" class="mt-2 hidden">
+                                            @if($project->tools && $project->tools->count())
+                                                <ul class="list-disc list-inside text-sm inline-block text-left">
+                                                    @foreach($project->tools as $tool)
+                                                        <li>{{ $tool->name }}</li>
+                                                    @endforeach
+                                                </ul>
+                                            @else
+                                                <span class="italic text-gray-500">Sin herramientas asignadas</span>
+                                            @endif
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-center">
+                                        {{-- Enlace editar --}}
+                                        <span class="inline-flex justify-center space-x-3">
+                                            <a href="{{ route('projects.edit', $project->id) }}" class="text-orange-600 dark:text-orange-400 hover:text-orange-900 dark:hover:text-orange-300 font-bold transition duration-150">Editar</a>
+
+                                            {{-- Botón eliminar --}}
+                                            <button
+                                                type="button"
+                                                class="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 font-bold transition duration-150 delete-project-btn"
+                                                title="Borrar proyecto"
+                                                data-delete-url="{{ route('projects.destroy', $project->id) }}"
+                                                data-project-name="{{ $project->name }}"
+                                            >
+                                                Borrar
+                                            </button>
+                                        </span>
                                     </td>
                                 </tr>
                                 @empty
                                 <tr>
                                     <td colspan="5" class="px-6 py-6 text-center text-lg text-gray-500 dark:text-gray-400">
                                         <p> ¡Genial! No hay proyectos registrados aún.</p>
-                                        {{-- Enlace de acción con color naranja --}}
+                                        {{-- Enlace de acción --}}
                                         <a href="{{ route('projects.create') }}" class="text-orange-600 dark:text-orange-400 hover:text-orange-900 dark:hover:text-orange-300 underline mt-2 inline-block">Añadir el primer proyecto</a>
                                     </td>
                                 </tr>
@@ -184,9 +242,7 @@
                         {{ $projects->links() }}
                     </div>
                     @endif
-                    {{-- ---------------------------------------------------- --}}
-                    {{-- FIN BLOQUE DE PAGINACIÓN --}}
-                    {{-- ---------------------------------------------------- --}}
+                    {{-- Fin bloque de paginación --}}
 
                 </div>
             </div>
@@ -202,7 +258,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.503-1.65 1.777-3.094L13.79 4.383c-.727-1.444-2.827-1.444-3.554 0L3.58 17.906c-.726 1.444.247 3.094 1.777 3.094z"></path>
                     </svg>
                 </div>
-                <h3 class="text-xl leading-6 font-extrabold text-gray-900 dark:text-white mt-2">Eliminar Proyecto</h3>
+                <h3 class="text-xl leading-6 font-extrabold text-gray-900 dark:text-white mt-2">Eliminar proyecto</h3>
                 <div class="mt-4 px-2 py-3 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-700/30">
                     <p class="text-sm text-gray-500 dark:text-gray-400">
                         ¿Estás seguro de que deseas eliminar permanentemente el proyecto "<strong id="projectNameDisplay" class="font-semibold text-gray-700 dark:text-gray-300"></strong>"? Esta acción no se puede deshacer.
@@ -224,7 +280,29 @@
             </div>
         </div>
     </div>
-    {{-- Lógica JavaScript del modal --}}
+
+    {{-- Script: toggle herramientas por proyecto y confirmación de edición --}}
+    <script>
+        document.querySelectorAll('.toggle-tools-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.getAttribute('data-project-id');
+                const panel = document.getElementById(`project-tools-${id}`);
+                if (panel) panel.classList.toggle('hidden');
+            });
+        });
+
+        // Confirmación de edición (mostrar modal simple nativo)
+        document.querySelectorAll('form[action*="projects/update"], form[action*="/projects/"]').forEach(form => {
+            const methodInput = form.querySelector('input[name="_method"]');
+            if (methodInput && methodInput.value.toUpperCase() === 'PUT') {
+                form.addEventListener('submit', (e) => {
+                    const ok = window.confirm('¿Confirmas la actualización del proyecto?');
+                    if (!ok) e.preventDefault();
+                });
+            }
+        });
+    </script>
+    {{-- Lógica del modal --}}
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const modal = document.getElementById('deleteConfirmationModal');

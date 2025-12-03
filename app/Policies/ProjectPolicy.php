@@ -7,7 +7,7 @@ use App\Models\Project;
 
 class ProjectPolicy
 {
-    public function before(User $user, string $ability): bool|null
+    public function before(User $user): bool|null
     {
         if ($user->role === 'admin') {
             return true;
@@ -17,7 +17,8 @@ class ProjectPolicy
 
     public function create(User $user): bool
     {
-        return $user->role === 'admin';
+        // Cualquier usuario autenticado puede crear proyectos
+        return $user->id !== null;
     }
 
     public function view(User $user, Project $project): bool
@@ -27,11 +28,13 @@ class ProjectPolicy
 
     public function update(User $user, Project $project): bool
     {
-        return $user->role === 'admin';
+        // Admin o responsable asignado puede editar
+        return $user->role === 'admin' || $project->assigned_to_user_id === $user->id;
     }
 
     public function delete(User $user, Project $project): bool
     {
-        return $user->role === 'admin';
+        // Admin o responsable asignado
+        return $user->role === 'admin' || $project->assigned_to_user_id === $user->id;
     }
 }

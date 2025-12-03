@@ -28,7 +28,7 @@
 
                         {{-- 1. Campo Nombre --}}
                         <div>
-                            <x-input-label for="name" :value="__('Nombre de la Herramienta')" />
+                            <x-input-label for="name" :value="__('Nombre de la herramienta')" />
                             <x-text-input
                                 id="name"
                                 name="name"
@@ -57,23 +57,24 @@
 
                         {{-- 3. Campo Estado (Enum) --}}
                         <div>
-                            <x-input-label for="status" :value="__('Estado Actual')" />
+                            <x-input-label for="status" :value="__('Estado actual')" />
+                            @php
+                                $statusOptions = $statuses ?? [];
+                            @endphp
                             <select id="status" name="status" class="mt-1 border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-orange-500 dark:focus:border-amber-400 focus:ring-orange-500 dark:focus:ring-amber-400 rounded-lg shadow-sm block w-full" required>
-                                <option value="Operativa"    {{ $currentStatus == 'Operativa' ? 'selected' : '' }}>Operativa</option>
-                                <option value="Disponible"   {{ $currentStatus == 'Disponible' ? 'selected' : '' }}>Disponible</option>
-                                <option value="Prestada"     {{ $currentStatus == 'Prestada' ? 'selected' : '' }}>Prestada</option>
-                                <option value="En Uso"       {{ $currentStatus == 'En Uso' ? 'selected' : '' }}>En Uso</option>
-                                <option value="Averiada"     {{ $currentStatus == 'Averiada' ? 'selected' : '' }}>Averiada</option>
-                                <option value="Mantenimiento"{{ $currentStatus == 'Mantenimiento' ? 'selected' : '' }}>Mantenimiento</option>
-                                <option value="Rota"         {{ $currentStatus == 'Rota' ? 'selected' : '' }}>Rota</option>
+                                @foreach ($statusOptions as $status)
+                                    <option value="{{ $status }}" @selected($currentStatus === $status)>{{ $status }}</option>
+                                @endforeach
                             </select>
                             <x-input-error class="mt-2" :messages="$errors->get('status')" />
                         </div>
 
-                        {{-- 4. Campo Usuario Asignado (Relación user_id - Ahora opcional) --}}
+                        {{-- 4. Campo Usuario Asignado (solo admin) --}}
+                        @if(auth()->user() && auth()->user()->role === 'admin')
                         <div>
-                            <x-input-label for="user_id" :value="__('Asignar a Usuario')" />
-                            <select id="user_id" name="user_id" required class="mt-1 border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-orange-500 dark:focus:border-amber-400 focus:ring-orange-500 dark:focus:ring-amber-400 rounded-lg shadow-sm block w-full">
+                            <x-input-label for="user_id" :value="__('Asignar a usuario')" />
+                            <select id="user_id" name="user_id" class="mt-1 border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-orange-500 dark:focus:border-amber-400 focus:ring-orange-500 dark:focus:ring-amber-400 rounded-lg shadow-sm block w-full">
+                                <option value="" {{ $currentUserId == null ? 'selected' : '' }}>Sin asignar</option>
                                 @foreach ($users as $user)
                                     <option value="{{ $user->id }}" {{ $currentUserId == $user->id ? 'selected' : '' }}>
                                         {{ $user->name }}
@@ -82,10 +83,11 @@
                             </select>
                             <x-input-error class="mt-2" :messages="$errors->get('user_id')" />
                         </div>
+                        @endif
 
                         {{-- 5. Campo Fecha de Adquisición --}}
                         <div>
-                            <x-input-label for="acquisition_date" :value="__('Fecha de Adquisición')" />
+                            <x-input-label for="acquisition_date" :value="__('Fecha de adquisición')" />
                             <x-text-input
                                 id="acquisition_date"
                                 name="acquisition_date"
@@ -119,3 +121,48 @@
         </div>
     </div>
 </x-app-layout>
+
+<!-- Modal de confirmación de edición de herramienta -->
+<div id="confirmEditToolModal" class="fixed inset-0 bg-gray-600 dark:bg-gray-900 bg-opacity-50 dark:bg-opacity-75 overflow-y-auto h-full w-full hidden z-50">
+    <div class="relative top-20 mx-auto p-5 border-2 border-gray-300 dark:border-gray-600 w-96 shadow-2xl rounded-xl bg-white dark:bg-gray-800 transform transition-all duration-300">
+        <div class="mt-3 text-center">
+            <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-indigo-100 dark:bg-indigo-900/30 border-2 border-indigo-300 dark:border-indigo-700 mb-4">
+                <svg class="h-8 w-8 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+            </div>
+            <h3 class="text-xl leading-6 font-extrabold text-gray-900 dark:text-white mt-2">Confirmar actualización</h3>
+            <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">¿Quieres guardar los cambios de esta herramienta?</p>
+            <div class="items-center px-4 py-3 flex justify-end space-x-3 mt-4">
+                <button id="cancelEditToolBtn" class="flex-1 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-base font-medium rounded-lg shadow-sm hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 transition duration-150 border border-gray-300 dark:border-gray-600">Cancelar</button>
+                <button id="confirmEditToolBtn" class="flex-1 px-4 py-2 bg-indigo-600 dark:bg-indigo-700 text-white text-base font-medium rounded-lg shadow-sm hover:bg-indigo-700 dark:hover:bg-indigo-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 transition duration-150 border border-indigo-700 dark:border-indigo-600">Confirmar</button>
+            </div>
+        </div>
+    </div>
+    </div>
+
+<script>
+    // Interceptar submit para mostrar modal
+    (function() {
+        const form = document.querySelector('form[action*="tools/update"], form[action*="/tools/"]');
+        if (!form) return;
+        const methodInput = form.querySelector('input[name="_method"]');
+        if (!methodInput || methodInput.value.toUpperCase() !== 'PUT') return;
+        let pendingSubmitEvent = null;
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            pendingSubmitEvent = e;
+            document.getElementById('confirmEditToolModal').classList.remove('hidden');
+        });
+        document.getElementById('cancelEditToolBtn').addEventListener('click', () => {
+            document.getElementById('confirmEditToolModal').classList.add('hidden');
+            pendingSubmitEvent = null;
+        });
+        document.getElementById('confirmEditToolBtn').addEventListener('click', () => {
+            document.getElementById('confirmEditToolModal').classList.add('hidden');
+            if (pendingSubmitEvent) {
+                pendingSubmitEvent.target.submit();
+            }
+        });
+    })();
+</script>

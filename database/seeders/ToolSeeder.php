@@ -34,7 +34,7 @@ class ToolSeeder extends Seeder
                 'name' => 'Sierra de calar Makita',
                 'description' => 'Cortes curvos y detallados en madera.',
                 'location' => 'Banco de Trabajo #3',
-                'status' => 'En Uso',
+                'status' => 'En uso',
                 'acquisition_date' => now()->subMonths(5),
                 'user_id' => $adminId,
             ],

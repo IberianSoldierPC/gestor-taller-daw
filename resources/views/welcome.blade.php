@@ -128,7 +128,7 @@
                                 </svg>
                             </span>
                             <p class="text-base text-[#1b1b18] dark:text-[#EDEDEC]">
-                                <strong class="font-semibold">Inventario Digital:</strong> Registra cada herramienta con sus detalles y ubicación.
+                                <strong class="font-semibold">Inventario digital:</strong> Registra cada herramienta con sus detalles y ubicación.
                             </p>
                         </li>
                         <li class="flex items-start">
@@ -138,7 +138,7 @@
                                 </svg>
                             </span>
                             <p class="text-base text-[#1b1b18] dark:text-[#EDEDEC]">
-                                <strong class="font-semibold">Control de Estado:</strong> Sigue si está 'Operativa', 'Prestada' o en 'Mantenimiento'.
+                                <strong class="font-semibold">Control de estado:</strong> Sigue si está 'Disponible', 'En uso' o en 'Mantenimiento'.
                             </p>
                         </li>
                         <li class="flex items-start">
@@ -148,7 +148,7 @@
                                 </svg>
                             </span>
                             <p class="text-base text-[#1b1b18] dark:text-[#EDEDEC]">
-                                <strong class="font-semibold">Asignación de Usuarios:</strong> Asigna recursos a responsables y proyectos.
+                                <strong class="font-semibold">Asignación de usuarios:</strong> Asigna recursos a responsables y proyectos.
                             </p>
                         </li>
                     </ul>

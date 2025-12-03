@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>{{ config('app.name', 'Laravel') }} | Iniciar Sesión</title>
+    <title>{{ config('app.name', 'Laravel') }} | Iniciar sesión</title>
 
     <!-- Google Font 'Instrument Sans' -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -78,7 +78,7 @@
             <a
                 href="{{ url('/') }}"
                 class="inline-block px-5 py-2 backdrop-blur-sm bg-white/20 text-white border-white/40 hover:border-white/70 border rounded-lg font-medium leading-normal transition-all duration-300">
-                Volver a Inicio
+                Volver a inicio
             </a>
         </nav>
     </header>
@@ -161,7 +161,7 @@
             {{-- BLOQUE DE PROMOCIÓN LATERAL (Derecha) --}}
             <div class="w-full lg:w-[350px] lg:shrink-0 lg:ml-0 flex items-center justify-center aspect-[335/376] lg:aspect-auto p-6 lg:p-0 bg-stone-200/90 dark:bg-[#1D0002]/90 rounded-t-lg lg:rounded-t-none lg:rounded-r-lg backdrop-blur-sm">
                 <div class="text-orange-700 dark:text-amber-300 text-center p-4">
-                    {{-- Icono de Candado/Seguridad --}}
+                    {{-- Icono de seguridad --}}
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-28 h-28 mx-auto mb-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1 1 21.75 8.25Z" />
                     </svg>

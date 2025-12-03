@@ -27,7 +27,9 @@ class ToolController extends Controller
             $query->where('name', 'like', '%' . $search . '%');
         }
 
-        if ($status = trim((string) $request->query('status'))) {
+        $statuses = Tool::statusOptions();
+
+        if (($status = trim((string) $request->query('status'))) && in_array($status, $statuses, true)) {
             $query->where('status', $status);
         }
 
@@ -36,7 +38,13 @@ class ToolController extends Controller
             $query->where('user_id', $userId);
         }
 
-        $query->orderBy('name', 'asc');
+        $sort = trim((string) $request->query('sort'));
+        if ($sort === 'alpha') {
+            $query->orderBy('name', 'asc');
+        } else {
+            // default: latest created first
+            $query->orderBy('created_at', 'desc');
+        }
 
         if ($user->role !== 'admin') {
             $query->where('user_id', $user->id);
@@ -44,21 +52,24 @@ class ToolController extends Controller
 
         $tools = $query->paginate(10)->withQueryString();
 
-        $totalTools = Tool::count();
-        $availableTools = Tool::whereIn('status', ['Operativa', 'Disponible'])->count();
-        $loanedTools = Tool::whereIn('status', ['Prestada', 'En Uso'])->count();
-        $brokenTools = Tool::whereIn('status', ['Averiada', 'Mantenimiento', 'Rota'])->count();
-
-        $statuses = ['Operativa','Disponible','Prestada','En Uso','Averiada','Mantenimiento','Rota'];
+        // Métricas por rol: admin ve global, usuario ve solo las suyas
+        $metricsBase = ($user->role === 'admin') ? Tool::query() : Tool::where('user_id', $user->id);
+        $totalTools = (clone $metricsBase)->count();
+        $availableTools = (clone $metricsBase)->where('status', 'Disponible')->count();
+        $inUseTools = (clone $metricsBase)->where('status', 'En uso')->count();
+        $maintenanceTools = (clone $metricsBase)->where('status', 'Mantenimiento')->count();
         $users = ($user->role === 'admin') ? User::orderBy('name')->get(['id','name']) : collect();
-        return view('tools.index', compact('tools', 'totalTools', 'availableTools', 'loanedTools', 'brokenTools', 'statuses', 'users'));
+        return view('tools.index', compact('tools', 'totalTools', 'availableTools', 'inUseTools', 'maintenanceTools', 'statuses', 'users'));
     }
 
     public function create(): View
     {
         $this->authorize('create', Tool::class);
-        $users = User::orderBy('name')->get(['id', 'name']);
-        return view('tools.create', compact('users'));
+        $users = Auth::user()->role === 'admin' ? User::orderBy('name')->get(['id', 'name']) : collect();
+        return view('tools.create', [
+            'users' => $users,
+            'statuses' => Tool::statusOptions(),
+        ]);
     }
 
     public function store(Request $request): RedirectResponse
@@ -68,11 +79,19 @@ class ToolController extends Controller
             'name' => 'required|string|max:255',
             'location' => 'required|string|max:255',
             // Estados permitidos
-            'status' => 'required|in:Operativa,Disponible,Averiada,Prestada,En Uso,Mantenimiento,Rota',
+            'status' => 'required|in:' . implode(',', Tool::STATUSES),
             'acquisition_date' => 'required|date',
-            'user_id' => 'required|exists:users,id',
+            // Para admin se permite seleccionar usuario; para usuarios se asigna automáticamente
+            'user_id' => 'nullable|exists:users,id',
             'description' => 'nullable|string',
         ]);
+
+        // Asignación automática para usuarios no administradores
+        $user = Auth::user();
+        if ($user->role !== 'admin') {
+            // Usuarios no admin: se autoasigna al creador
+            $validatedData['user_id'] = $user->id;
+        } // Admin: permitir crear sin asignar (nullable)
 
         Tool::create($validatedData);
 
@@ -88,8 +107,12 @@ class ToolController extends Controller
     {
         $tool = Tool::findOrFail($id);
         $this->authorize('update', $tool);
-        $users = User::orderBy('name')->get(['id', 'name']);
-        return view('tools.edit', compact('tool', 'users'));
+        $users = Auth::user()->role === 'admin' ? User::orderBy('name')->get(['id', 'name']) : collect();
+        return view('tools.edit', [
+            'tool' => $tool,
+            'users' => $users,
+            'statuses' => Tool::statusOptions(),
+        ]);
     }
 
     public function update(Request $request, string $id): RedirectResponse
@@ -101,11 +124,18 @@ class ToolController extends Controller
             'name' => 'required|string|max:255',
             'location' => 'required|string|max:255',
             // Estados permitidos
-            'status' => 'required|in:Operativa,Disponible,Averiada,Prestada,En Uso,Mantenimiento,Rota',
+            'status' => 'required|in:' . implode(',', Tool::STATUSES),
             'acquisition_date' => 'required|date',
-            'user_id' => 'required|exists:users,id',
+            // Solo admin puede cambiar el usuario asignado
+            'user_id' => 'nullable|exists:users,id',
             'description' => 'nullable|string',
         ]);
+        // Para no admin, mantener propietario actual
+        $user = Auth::user();
+        if ($user->role !== 'admin') {
+            // Usuarios no admin: mantener el propietario actual
+            $validatedData['user_id'] = $tool->user_id;
+        } // Admin: permitir dejar sin asignar (nullable)
 
         $tool->update($validatedData);
 

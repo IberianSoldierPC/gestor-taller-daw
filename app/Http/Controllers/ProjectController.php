@@ -23,11 +23,18 @@ class ProjectController extends Controller
         if ($status = trim((string) $request->query('status'))) {
             $query->where('status', $status);
         }
+        // 'Urgente' se tratará como estado, no como prioridad
         // Filtro por responsable (solo admin)
         if ($user->role === 'admin' && ($userId = $request->query('user_id'))) {
             $query->where('assigned_to_user_id', $userId);
         }
-        $query->orderBy('name', 'asc');
+        $sort = trim((string) $request->query('sort'));
+        if ($sort === 'alpha') {
+            $query->orderBy('name', 'asc');
+        } else {
+            // default newest first
+            $query->orderBy('created_at', 'desc');
+        }
         if ($user->role === 'admin') {
             $title = 'Todos los Proyectos del Taller';
         } else {
@@ -43,17 +50,18 @@ class ProjectController extends Controller
         $totalProjects = $baseQuery->count();
         $inProgressProjects = (clone $baseQuery)->where('status', 'En proceso')->count();
         $completedProjects = (clone $baseQuery)->where('status', 'Terminado')->count();
-        $blockedProjects = (clone $baseQuery)->where('status', 'Bloqueado')->orWhere('status', 'En espera de piezas')->count();
+        $urgentProjects = (clone $baseQuery)->where('status', 'Urgente')->count();
+        $waitingProjects = (clone $baseQuery)->where('status', 'En espera de piezas')->count();
         $tools = Tool::with('user')->get();
-        $statuses = ['Pendiente','En proceso','Terminado','En espera de piezas'];
+        $statuses = ['Pendiente','En proceso','Terminado','En espera de piezas','Urgente'];
         $users = ($user->role === 'admin') ? User::orderBy('name')->get(['id','name']) : collect();
-        return view('projects.index', compact('projects', 'title', 'tools', 'totalProjects', 'inProgressProjects', 'completedProjects', 'blockedProjects', 'statuses','users'));
+        return view('projects.index', compact('projects', 'title', 'tools', 'totalProjects', 'inProgressProjects', 'completedProjects', 'urgentProjects', 'waitingProjects', 'statuses','users'));
     }
 
     public function create(): View
     {
         $this->authorize('create', Project::class);
-        $users = User::orderBy('name')->get(['id', 'name']);
+        $users = Auth::user()->role === 'admin' ? User::orderBy('name')->get(['id', 'name']) : collect();
         $tools = Tool::orderBy('name')->get(['id', 'name']);
         return view('projects.create', compact('users', 'tools'));
     }
@@ -64,13 +72,21 @@ class ProjectController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:150',
             'description' => 'nullable|string',
-            'status' => 'required|in:Pendiente,En proceso,Terminado,En espera de piezas',
-            'priority' => 'required|in:Baja,Media,Alta,Urgente',
+            'status' => 'required|in:Pendiente,En proceso,Terminado,En espera de piezas,Urgente',
+            // prioridad opcional (no usada en front)
+            'priority' => 'nullable|in:Baja,Media,Alta,Urgente',
             'due_date' => 'nullable|date',
-            'assigned_to_user_id' => 'required|exists:users,id',
+            // Para admin se permite seleccionar responsable; para usuarios se asigna automáticamente
+            'assigned_to_user_id' => 'nullable|exists:users,id',
             'tools' => 'nullable|array',
             'tools.*' => 'exists:tools,id',
         ]);
+        $user = Auth::user();
+        if ($user->role !== 'admin') {
+            // Usuarios no admin: se autoasigna al creador
+            $validatedData['assigned_to_user_id'] = $user->id;
+        } // Admin: permitir crear sin responsable (nullable)
+
         $project = Project::create($validatedData);
         $project->tools()->sync($request->input('tools', []));
         return redirect()->route('projects.index')->with('success', 'Proyecto "' . $project->name . '" creado con éxito.');
@@ -88,7 +104,7 @@ class ProjectController extends Controller
         $this->authorize('update', $project);
         $tools = Tool::all();
         $selectedToolIds = $project->tools()->pluck('tool_id')->toArray();
-        $users = User::orderBy('name')->get(['id', 'name']);
+        $users = Auth::user()->role === 'admin' ? User::orderBy('name')->get(['id', 'name']) : collect();
         return view('projects.edit', compact('project', 'tools', 'selectedToolIds', 'users'));
     }
 
@@ -98,13 +114,20 @@ class ProjectController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'status' => 'required|in:Pendiente,En proceso,Terminado,En espera de piezas',
-            'priority' => 'required|in:Baja,Media,Alta,Urgente',
+            'status' => 'required|in:Pendiente,En proceso,Terminado,En espera de piezas,Urgente',
+            'priority' => 'nullable|in:Baja,Media,Alta,Urgente',
             'due_date' => 'nullable|date',
-            'assigned_to_user_id' => 'required|exists:users,id',
+            // Solo admin puede cambiar el responsable
+            'assigned_to_user_id' => 'nullable|exists:users,id',
             'tools' => 'nullable|array',
             'tools.*' => 'exists:tools,id',
         ]);
+        $user = Auth::user();
+        if ($user->role !== 'admin') {
+            // Usuarios no admin: mantener el responsable actual
+            $validatedData['assigned_to_user_id'] = $project->assigned_to_user_id;
+        } // Admin: permitir dejar sin responsable (nullable)
+
         $project->update($validatedData);
         $project->tools()->sync($request->input('tools', []));
         return redirect()->route('projects.index')

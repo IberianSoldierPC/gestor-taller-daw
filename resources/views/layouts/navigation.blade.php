@@ -1,38 +1,45 @@
 <nav x-data="{ open: false }" class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
 
-    <!-- Primary Navigation Menu -->
+    <!-- Menú principal de navegación -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="relative flex justify-between h-16">
-            <!-- Centered Logo (absolute) -->
+            <!-- Logo centrado -->
             <div class="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
                 <a href="{{ route('dashboard') }}" class="pointer-events-auto">
-                    <!-- Color del logo ajustado al acento principal (Naranja/Ámbar) -->
+                    <!-- Logo con color de acento -->
                     <x-application-logo class="block h-9 w-auto fill-current text-orange-600 dark:text-amber-400" />
                 </a>
             </div>
 
             <div class="flex items-center">
 
-                <!-- Navigation Links -->
+                <!-- Enlaces de navegación -->
                 <div class="hidden space-x-2 sm:-my-px sm:ms-8 sm:flex">
 
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')"
                         class="font-semibold text-base hover:text-orange-600 dark:hover:text-amber-400 transition duration-150 ease-in-out">
-                        {{ __('Dashboard') }}
+                        🏠 {{ __('Panel') }}
                     </x-nav-link>
 
                     <x-nav-link :href="route('tools.index')" :active="request()->routeIs('tools.*')"
                         class="font-semibold text-base hover:text-orange-600 dark:hover:text-amber-400 transition duration-150 ease-in-out">
-                        {{ __('Herramientas') }}
+                        🔧 {{ __('Herramientas') }}
                     </x-nav-link>
 
-                    <!-- ENLACE CRÍTICO: Debe apuntar a projects.index -->
+                    <!-- Enlace a proyectos -->
                     <x-nav-link :href="route('projects.index')" :active="request()->routeIs('projects.*')"
                         class="font-semibold text-base hover:text-orange-600 dark:hover:text-amber-400 transition duration-150 ease-in-out">
-                        {{ __('Proyectos') }}
+                        📁 {{ __('Proyectos') }}
                     </x-nav-link>
 
-                    {{-- Temporalmente comentado hasta que se defina la ruta 'collaborators.index' --}}
+                    @if(auth()->user() && auth()->user()->role === 'admin')
+                    <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')"
+                        class="font-semibold text-base hover:text-orange-600 dark:hover:text-amber-400 transition duration-150 ease-in-out">
+                        👥 {{ __('Gestión usuarios') }}
+                    </x-nav-link>
+                    @endif
+
+                    {{-- Enlace a colaboradores (pendiente de ruta) --}}
                     {{-- <x-nav-link :href="route('collaborators.index')" :active="request()->routeIs('collaborators.*')"
                         class="font-semibold text-base hover:text-orange-600 dark:hover:text-amber-400 transition duration-150 ease-in-out">
                         {{ __('Colaboradores') }}
@@ -41,7 +48,7 @@
                 </div>
             </div>
 
-            <!-- Settings Dropdown -->
+            <!-- Menú de ajustes -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <div class="me-4">
                     <x-theme-toggle />
@@ -49,7 +56,7 @@
 
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
-                        <!-- Botón de Perfil estilizado -->
+                        <!-- Botón de perfil -->
                         <button class="inline-flex items-center px-4 py-2 border border-transparent text-base leading-4 font-semibold rounded-xl text-gray-700 dark:text-gray-300 bg-gray-100/70 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 focus:outline-none transition ease-in-out duration-150 shadow-md">
                             <div>{{ Auth::user()->name }}</div>
 
@@ -75,14 +82,14 @@
                                 onclick="event.preventDefault();
                                                 this.closest('form').submit();"
                                 class="text-red-500 hover:bg-red-100 dark:text-red-400 dark:hover:bg-red-900/40">
-                                {{ __('Cerrar Sesión') }}
+                                {{ __('Cerrar sesión') }}
                             </x-dropdown-link>
                         </form>
                     </x-slot>
                 </x-dropdown>
             </div>
 
-            <!-- Hamburger (Botón móvil) -->
+            <!-- Botón móvil -->
             <div class="-me-2 flex items-center sm:hidden">
                 <x-theme-toggle />
                 
@@ -96,28 +103,33 @@
         </div>
     </div>
 
-    <!-- Responsive Navigation Menu -->
+    <!-- Navegación responsive -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
 
-        <!-- Enlaces Responsivos -->
+        <!-- Enlaces responsive -->
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" class="hover:text-orange-600 dark:hover:text-amber-400">
-                {{ __('Dashboard') }}
+                🏠 {{ __('Panel') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('tools.index')" :active="request()->routeIs('tools.*')" class="hover:text-orange-600 dark:hover:text-amber-400">
-                {{ __('Herramientas') }}
+                🔧 {{ __('Herramientas') }}
             </x-responsive-nav-link>
-            <!-- ENLACE CRÍTICO MÓVIL: Debe apuntar a projects.index -->
+            <!-- Enlace móvil a proyectos -->
             <x-responsive-nav-link :href="route('projects.index')" :active="request()->routeIs('projects.*')" class="hover:text-orange-600 dark:hover:text-amber-400">
-                {{ __('Proyectos') }}
+                📁 {{ __('Proyectos') }}
             </x-responsive-nav-link>
+                @if(auth()->user() && auth()->user()->role === 'admin')
+                <x-responsive-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')" class="hover:text-orange-600 dark:hover:text-amber-400">
+                    👥 {{ __('Gestión usuarios') }}
+                </x-responsive-nav-link>
+                @endif
             {{-- Temporalmente comentado hasta que se defina la ruta 'collaborators.index' --}}
             {{-- <x-responsive-nav-link :href="route('collaborators.index')" :active="request()->routeIs('collaborators.*')" class="hover:text-orange-600 dark:hover:text-amber-400">
                 {{ __('Colaboradores') }}
             </x-responsive-nav-link> --}}
         </div>
 
-        <!-- Responsive Settings Options -->
+        <!-- Opciones de ajustes responsive -->
         <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
             <div class="px-4">
                 <div class="font-semibold text-base text-gray-800 dark:text-gray-200">{{ Auth::user()->name }}</div>
@@ -138,7 +150,7 @@
                         onclick="event.preventDefault();
                                         this.closest('form').submit();"
                         class="text-red-500 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/50">
-                        {{ __('Cerrar Sesión') }}
+                        {{ __('Cerrar sesión') }}
                     </x-responsive-nav-link>
                 </form>
             </div>

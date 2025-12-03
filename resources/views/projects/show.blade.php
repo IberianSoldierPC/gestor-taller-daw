@@ -1,11 +1,11 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Detalles del Proyecto') }}: {{ $project->name }}
+            {{ __('Detalles del proyecto') }}: {{ $project->name }}
         </h2>
     </x-slot>
 
-    {{-- Clases para estado y prioridad --}}
+    {{-- Clases de estado y prioridad --}}
     @php
         // Clases de estado (alineadas con valores del sistema)
         $statusClasses = [
@@ -49,7 +49,7 @@
                         </div>
                     </div>
 
-                    {{-- Metadatos: asignación, estado, prioridad y vencimiento --}}
+                    {{-- Metadatos --}}
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4 border-t dark:border-gray-700">
                         
                         {{-- Estado --}}
@@ -68,7 +68,7 @@
                             </span>
                         </div>
                         
-                        {{-- Fecha de Vencimiento --}}
+                        {{-- Fecha límite --}}
                         <div>
                             <p class="text-sm font-semibold uppercase text-indigo-600 dark:text-indigo-400">Fecha límite</p>
                             <p class="font-medium">
@@ -87,7 +87,7 @@
                     </div>
                 </div>
 
-                {{-- Herramientas (N:M) --}}
+                {{-- Herramientas --}}
                 <div class="mt-8 pt-4 border-t dark:border-gray-700">
                     <h3 class="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100 border-b pb-2">Herramientas utilizadas</h3>
                     
@@ -111,13 +111,13 @@
                         
                         {{-- Fecha de creación --}}
                         <div>
-                            <p class="font-semibold uppercase text-indigo-500">Fecha de Creación</p>
+                            <p class="font-semibold uppercase text-indigo-500">Fecha de creación</p>
                             <p>{{ $project->created_at->format('d/m/Y H:i:s') }}</p>
                         </div>
 
-                        {{-- Última Actualización --}}
+                        {{-- Última actualización --}}
                         <div>
-                            <p class="font-semibold uppercase text-indigo-500">Última Actualización</p>
+                            <p class="font-semibold uppercase text-indigo-500">Última actualización</p>
                             <p>{{ $project->updated_at->format('d/m/Y H:i:s') }}</p>
                         </div>
 
@@ -128,11 +128,11 @@
                 <div class="mt-8 flex items-center justify-end space-x-4 border-t pt-4 dark:border-gray-700">
                     <a href="{{ route('projects.edit', $project) }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150 shadow-md hover:shadow-lg">
                         <svg class="w-4 h-4 me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
-                        Editar Proyecto
+                        Editar proyecto
                     </a>
                     <a href="{{ route('projects.index') }}" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md font-semibold text-xs text-gray-700 dark:text-gray-300 uppercase tracking-widest bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition ease-in-out duration-150">
                         <svg class="w-4 h-4 me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                        Volver al Listado
+                        Volver al listado
                     </a>
                 </div>
 

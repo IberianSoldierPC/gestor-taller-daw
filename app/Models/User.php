@@ -47,10 +47,10 @@ class User extends Authenticatable
         ];
     }
 
-    // ---------------- RELACIONES ----------------
+    // Relaciones
 
     /**
-     * Relación 1:N: Obtiene todas las herramientas asignadas al usuario.
+     * Herramientas asignadas al usuario (1:N).
      */
     public function tools(): HasMany
     {
@@ -58,11 +58,11 @@ class User extends Authenticatable
     }
 
     /**
-     * Relación 1:N: Obtiene todos los proyectos asignados al usuario.
+     * Proyectos asignados al usuario (1:N).
      */
     public function projects(): HasMany
     {
-        // Clave foránea explícita 'assigned_to_user_id'
+        // Clave foránea: 'assigned_to_user_id'
         return $this->hasMany(Project::class, 'assigned_to_user_id');
     }
 }

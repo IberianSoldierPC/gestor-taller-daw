@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Añadir Nueva Herramienta') }}
+            {{ __('Añadir nueva herramienta') }}
         </h2>
     </x-slot>
 
@@ -17,7 +17,7 @@
 
                         <!-- Campo Nombre -->
                         <div>
-                            <x-input-label for="name" :value="__('Nombre de la Herramienta')" />
+                            <x-input-label for="name" :value="__('Nombre de la herramienta')" />
                             <!-- x-text-input ya tiene estilos, aseguramos la coherencia con dark mode -->
                             <x-text-input id="name" name="name" type="text" class="mt-1 block w-full focus:border-orange-500 focus:ring-orange-500 dark:focus:border-amber-400 dark:focus:ring-amber-400 rounded-lg" :value="old('name')" required autofocus />
                             <x-input-error class="mt-2" :messages="$errors->get('name')" />
@@ -32,24 +32,26 @@
 
                         <!-- Campo Estado -->
                         <div>
-                            <x-input-label for="status" :value="__('Estado Actual')" />
+                            <x-input-label for="status" :value="__('Estado actual')" />
                             <!-- Aplicamos estilos del input a Select -->
+                            @php
+                                $statusOptions = $statuses ?? [];
+                                $selectedStatus = old('status', $statusOptions[0] ?? 'Disponible');
+                            @endphp
                             <select id="status" name="status" class="mt-1 border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-orange-500 dark:focus:border-amber-400 focus:ring-orange-500 dark:focus:ring-amber-400 rounded-lg shadow-sm block w-full" required>
-                                <option value="Operativa"   {{ old('status') == 'Operativa' ? 'selected' : '' }}>Operativa</option>
-                                <option value="Disponible"  {{ old('status') == 'Disponible' ? 'selected' : '' }}>Disponible</option>
-                                <option value="Prestada"    {{ old('status') == 'Prestada' ? 'selected' : '' }}>Prestada</option>
-                                <option value="En Uso"      {{ old('status') == 'En Uso' ? 'selected' : '' }}>En Uso</option>
-                                <option value="Averiada"    {{ old('status') == 'Averiada' ? 'selected' : '' }}>Averiada</option>
-                                <option value="Mantenimiento" {{ old('status') == 'Mantenimiento' ? 'selected' : '' }}>Mantenimiento</option>
-                                <option value="Rota"        {{ old('status') == 'Rota' ? 'selected' : '' }}>Rota</option>
+                                @foreach ($statusOptions as $status)
+                                    <option value="{{ $status }}" @selected($selectedStatus === $status)>{{ $status }}</option>
+                                @endforeach
                             </select>
                             <x-input-error class="mt-2" :messages="$errors->get('status')" />
                         </div>
 
-                        <!-- Campo Asignar Usuario -->
+                        <!-- Campo Asignar Usuario (solo admin) -->
+                        @if(auth()->user() && auth()->user()->role === 'admin')
                         <div>
-                            <x-input-label for="user_id" :value="__('Asignar a Usuario')" />
-                            <select id="user_id" name="user_id" required class="mt-1 border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-orange-500 dark:focus:border-amber-400 focus:ring-orange-500 dark:focus:ring-amber-400 rounded-lg shadow-sm block w-full">
+                            <x-input-label for="user_id" :value="__('Asignar a usuario')" />
+                            <select id="user_id" name="user_id" class="mt-1 border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-orange-500 dark:focus:border-amber-400 focus:ring-orange-500 dark:focus:ring-amber-400 rounded-lg shadow-sm block w-full">
+                                <option value="" {{ old('user_id') == '' ? 'selected' : '' }}>Sin asignar</option>
                                 @foreach ($users as $user)
                                     <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
                                         {{ $user->name }}
@@ -58,10 +60,11 @@
                             </select>
                             <x-input-error class="mt-2" :messages="$errors->get('user_id')" />
                         </div>
+                        @endif
 
                         <!-- Campo Fecha de Adquisición -->
                         <div>
-                            <x-input-label for="acquisition_date" :value="__('Fecha de Adquisición')" />
+                            <x-input-label for="acquisition_date" :value="__('Fecha de adquisición')" />
                             <x-text-input id="acquisition_date" name="acquisition_date" type="date" class="mt-1 block w-full focus:border-orange-500 focus:ring-orange-500 dark:focus:border-amber-400 dark:focus:ring-amber-400 rounded-lg" :value="old('acquisition_date')" />
                             <x-input-error class="mt-2" :messages="$errors->get('acquisition_date')" />
                         </div>
