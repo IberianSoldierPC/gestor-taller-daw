@@ -5,7 +5,7 @@
         </h2>
 
         <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-            {{ __('Una vez que tu cuenta sea eliminada, todos sus recursos y datos serán borrados permanentemente. Antes de eliminar tu cuenta, por favor, descarga cualquier dato o información que desees conservar.') }}
+            {{ __('Al eliminar la cuenta, todos los recursos y datos se borrarán permanentemente. Descarga previamente cualquier información que quieras conservar.') }}
         </p>
     </header>
 
@@ -24,7 +24,7 @@
             </h2>
 
             <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                {{ __('Una vez que tu cuenta sea eliminada, todos sus recursos y datos serán borrados permanentemente. Por favor, introduce tu contraseña para confirmar que deseas eliminar tu cuenta de forma permanente.') }}
+                {{ __('Al eliminar la cuenta, todos los recursos y datos se borrarán permanentemente. Introduce tu contraseña para confirmar la operación.') }}
             </p>
 
             <div class="mt-6">

@@ -15,12 +15,10 @@
             @endif
 
 
-            {{-- ---------------------------------------------------- --}}
-            {{-- BLOQUE DE TARJETAS DE ESTADÍSTICAS (PROYECTOS) --}}
-            {{-- ---------------------------------------------------- --}}
+            {{-- Tarjetas de estadísticas de proyectos --}}
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
 
-                {{-- 1. Tarjeta: Total de proyectos (AZUL) --}}
+                {{-- Total de proyectos --}}
                 <div class="bg-white dark:bg-gray-700 p-6 rounded-2xl shadow-xl border-l-4 border-blue-500 dark:border-blue-400 transition hover:shadow-2xl">
                     <p class="text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Total Registrados</p>
                     <p class="text-4xl font-extrabold text-gray-900 dark:text-white mt-1">
@@ -28,7 +26,7 @@
                     </p>
                 </div>
 
-                {{-- 2. Tarjeta: Proyectos en progreso (AMARILLO/ÁMBAR) --}}
+                {{-- En progreso --}}
                 <div class="bg-white dark:bg-gray-700 p-6 rounded-2xl shadow-xl border-l-4 border-yellow-500 dark:border-amber-400 transition hover:shadow-2xl">
                     <p class="text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">En Progreso</p>
                     <p class="text-4xl font-extrabold text-gray-900 dark:text-white mt-1">
@@ -36,7 +34,7 @@
                     </p>
                 </div>
 
-                {{-- 3. Tarjeta: Proyectos completados (VERDE) --}}
+                {{-- Completados --}}
                 <div class="bg-white dark:bg-gray-700 p-6 rounded-2xl shadow-xl border-l-4 border-green-500 dark:border-green-400 transition hover:shadow-2xl">
                     <p class="text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Completados</p>
                     <p class="text-4xl font-extrabold text-gray-900 dark:text-white mt-1">
@@ -44,7 +42,7 @@
                     </p>
                 </div>
 
-                {{-- 4. Tarjeta: Proyectos bloqueados/riesgo (ROJO) --}}
+                {{-- Bloqueados / Riesgo --}}
                 <div class="bg-white dark:bg-gray-700 p-6 rounded-2xl shadow-xl border-l-4 border-red-500 dark:border-red-400 transition hover:shadow-2xl">
                     <p class="text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Bloqueados / Riesgo</p>
                     <p class="text-4xl font-extrabold text-gray-900 dark:text-white mt-1">
@@ -53,17 +51,15 @@
                 </div>
 
             </div>
-            {{-- ---------------------------------------------------- --}}
-            {{-- FIN BLOQUE DE ESTADÍSTICAS --}}
-            {{-- ---------------------------------------------------- --}}
+            {{-- Fin estadísticas --}}
 
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg border border-gray-200 dark:border-gray-700">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
 
                     <div class="flex justify-between items-center mb-6 border-b border-gray-200 dark:border-gray-700 pb-4">
-                        {{-- Título principal con el color de la marca naranja --}}
+                        {{-- Título principal --}}
                         <p class="text-2xl font-extrabold text-orange-600 dark:text-amber-400">Listado de proyectos</p>
-                        {{-- Botón de acción principal con color naranja --}}
+                        {{-- Botón de acción principal --}}
                         <a href="{{ route('projects.create') }}" class="bg-orange-600 hover:bg-orange-700 dark:bg-orange-500 dark:hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out transform hover:scale-105">
                             <svg class="w-5 h-5 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
@@ -116,11 +112,8 @@
                             </thead>
                             <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                                 @php
-                                // Clases ocultas para forzar la compilación de Tailwind de todos los colores posibles
-                                // Las mantengo ya que son un buen intento para forzar el Purge/JIT de Tailwind
                                 echo '<span class="hidden bg-green-100 text-green-800 bg-red-100 text-red-800 bg-yellow-100 text-yellow-800 bg-amber-100 text-amber-800 bg-gray-100 text-gray-800 dark:bg-green-900/20 dark:text-green-400 dark:bg-red-900/20 dark:text-red-400 dark:bg-yellow-900/20 dark:text-yellow-400 dark:bg-amber-900/20 dark:text-amber-400 dark:bg-gray-900/20 dark:text-gray-400"></span>';
 
-                                // Mapeo de colores para estados de proyecto
                                 $statusColors = [
                                 'Terminado' => ['bg' => 'bg-green-100 dark:bg-green-900/20', 'text' => 'text-green-800 dark:text-green-400'],
                                 'En proceso' => ['bg' => 'bg-amber-100 dark:bg-amber-900/20', 'text' => 'text-amber-800 dark:text-amber-400'],
@@ -133,7 +126,7 @@
 
                                 @forelse ($projects as $project)
                                 @php
-                                // Obtiene las clases de color, usando gris por defecto si el estado no coincide con las claves
+                                // Clases de color; gris por defecto si no coincide
                                 $color = $statusColors[$project->status] ?? ['bg' => 'bg-gray-100 dark:bg-gray-900/20', 'text' => 'text-gray-800 dark:text-gray-400'];
                                 @endphp
                                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition duration-100 border-b border-gray-200 dark:border-gray-700">
@@ -153,19 +146,19 @@
                                             {{ $project->status }}
                                         </span>
                                     </td>
-                                    {{-- Responsable: relación definida como assignedTo() en el modelo --}}
+                                    {{-- Responsable --}}
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ $project->assignedTo->name ?? 'N/A' }}</td>
 
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium flex space-x-2">
-                                        {{-- Enlace Editar con color naranja --}}
+                                        {{-- Enlace Editar --}}
                                         <a href="{{ route('projects.edit', $project->id) }}" class="text-orange-600 dark:text-orange-400 hover:text-orange-900 dark:hover:text-orange-300 font-bold transition duration-150">Editar</a>
 
-                                        {{-- Botón para mostrar el modal de confirmación --}}
+                                        {{-- Botón eliminar --}}
                                         <button
                                             type="button"
                                             class="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 font-bold transition duration-150 delete-project-btn"
                                             title="Borrar proyecto"
-                                            data-project-id="{{ $project->id }}"
+                                            data-delete-url="{{ route('projects.destroy', $project->id) }}"
                                             data-project-name="{{ $project->name }}"
                                         >
                                             Borrar
@@ -185,10 +178,7 @@
                         </table>
                     </div>
 
-                    {{-- ---------------------------------------------------- --}}
-                    {{-- BLOQUE DE PAGINACIÓN --}}
-                    {{-- ---------------------------------------------------- --}}
-                    {{-- Solo mostramos la paginación si hay más de una página. --}}
+                    {{-- Paginación --}}
                     @if (isset($projects) && method_exists($projects, 'hasPages') && $projects->hasPages())
                     <div class="mt-6 p-4 border-t-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 rounded-b-lg">
                         {{ $projects->links() }}
@@ -203,9 +193,7 @@
         </div>
     </div>
 
-    {{-- ---------------------------------------------------- --}}
-    {{-- MODAL DE CONFIRMACIÓN DE ELIMINACIÓN --}}
-    {{-- ---------------------------------------------------- --}}
+    {{-- Modal de confirmación de eliminación --}}
     <div id="deleteConfirmationModal" class="fixed inset-0 bg-gray-600 dark:bg-gray-900 bg-opacity-50 dark:bg-opacity-75 overflow-y-auto h-full w-full hidden z-50">
         <div class="relative top-20 mx-auto p-5 border-2 border-gray-300 dark:border-gray-600 w-96 shadow-2xl rounded-xl bg-white dark:bg-gray-800 transform transition-all duration-300">
             <div class="mt-3 text-center">
@@ -224,7 +212,7 @@
                     <button id="cancelDeleteBtn" class="flex-1 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-base font-medium rounded-lg shadow-sm hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 transition duration-150 border border-gray-300 dark:border-gray-600">
                         Cancelar
                     </button>
-                    {{-- Formulario que se enviará al confirmar --}}
+                    {{-- Formulario de confirmación --}}
                     <form id="deleteProjectForm" method="POST" class="inline flex-1">
                         @csrf
                         @method('DELETE')
@@ -236,9 +224,7 @@
             </div>
         </div>
     </div>
-    {{-- ---------------------------------------------------- --}}
-    {{-- LÓGICA DE JAVASCRIPT PARA EL MODAL --}}
-    {{-- ---------------------------------------------------- --}}
+    {{-- Lógica JavaScript del modal --}}
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const modal = document.getElementById('deleteConfirmationModal');
@@ -249,12 +235,9 @@
 
             deleteButtons.forEach(button => {
                 button.addEventListener('click', function () {
-                    const projectId = this.getAttribute('data-project-id');
                     const projectName = this.getAttribute('data-project-name');
-
-
-                    const deleteRoute = `{{ route('projects.destroy', 'PLACEHOLDER') }}`.replace('PLACEHOLDER', projectId);
-                    form.action = deleteRoute;
+                    const deleteUrl = this.getAttribute('data-delete-url');
+                    form.action = deleteUrl;
 
                     projectNameDisplay.textContent = projectName;
 

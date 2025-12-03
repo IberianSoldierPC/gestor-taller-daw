@@ -5,9 +5,9 @@
         </h2>
     </x-slot>
 
-    {{-- Lógica Blade para Badges de Estado y Prioridad --}}
+    {{-- Clases para estado y prioridad --}}
     @php
-        // Definición de clases para el estado (alineado con los valores del sistema)
+        // Clases de estado (alineadas con valores del sistema)
         $statusClasses = [
             'Pendiente' => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
             'En proceso' => 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-300',
@@ -16,7 +16,7 @@
         ];
         $currentStatusClass = $statusClasses[$project->status] ?? 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
 
-        // Definición de clases para la prioridad
+        // Clases de prioridad
         $priorityClasses = [
             'Baja' => 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
             'Media' => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
@@ -30,9 +30,9 @@
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg p-6">
                 
-                <h3 class="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100 border-b pb-2">Información principal</h3>
+                <h3 class="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100 border-b pb-2">Información</h3>
                 
-                {{-- Contenedor de detalles --}}
+                {{-- Detalles --}}
                 <div class="space-y-4 text-gray-700 dark:text-gray-300">
                     
                     {{-- Nombre --}}
@@ -49,7 +49,7 @@
                         </div>
                     </div>
 
-                    {{-- Grid de Metadatos: Asignación, Estado, Prioridad, Vencimiento, Creador --}}
+                    {{-- Metadatos: asignación, estado, prioridad y vencimiento --}}
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4 border-t dark:border-gray-700">
                         
                         {{-- Estado --}}
@@ -82,12 +82,12 @@
                             <p class="font-medium">{{ $project->assignedTo->name ?? 'Usuario eliminado' }}</p>
                         </div>
                         
-                        {{-- (Opcional) Creado Por: eliminado porque no existe relación definida en el modelo --}}
+                        {{-- Creador: no se muestra (sin relación definida) --}}
 
                     </div>
                 </div>
 
-                {{-- Seccion de Herramientas (N:M) --}}
+                {{-- Herramientas (N:M) --}}
                 <div class="mt-8 pt-4 border-t dark:border-gray-700">
                     <h3 class="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100 border-b pb-2">Herramientas utilizadas</h3>
                     
@@ -104,7 +104,7 @@
                     @endif
                 </div>
 
-                {{-- Seccion de Fechas de auditoría --}}
+                {{-- Auditoría de tiempos --}}
                 <div class="mt-8 pt-4 border-t dark:border-gray-700">
                     <h3 class="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100 border-b pb-2">Auditoría de tiempos</h3>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-600 dark:text-gray-400">
@@ -124,7 +124,7 @@
                     </div>
                 </div>
 
-                {{-- Botones de Accion --}}
+                {{-- Acciones --}}
                 <div class="mt-8 flex items-center justify-end space-x-4 border-t pt-4 dark:border-gray-700">
                     <a href="{{ route('projects.edit', $project) }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150 shadow-md hover:shadow-lg">
                         <svg class="w-4 h-4 me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>

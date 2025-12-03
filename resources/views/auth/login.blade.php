@@ -12,11 +12,11 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700,800&display=swap" rel="stylesheet" />
 
-    <!-- Incluye los assets de Vite (CSS y JS) -->@vite(['resources/css/app.css', 'resources/js/app.js'])
+    <!-- Assets de Vite -->@vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    <!-- Estilos personalizados para el video de fondo y la superposición -->
+    <!-- Estilos de video de fondo y superposición -->
     <style>
-        /* La clase personalizada asegura que el video cubra todo el viewport */
+        /* El video cubre todo el viewport */
         .video-background {
             position: fixed;
             top: 0;
@@ -25,10 +25,10 @@
             height: 100%;
             object-fit: cover;
             z-index: -10;
-            /* Asegura que esté detrás de todo */
+            /* Detrás de todo */
         }
 
-        /* Superposición para mejorar la legibilidad del texto sobre el video */
+        /* Superposición para legibilidad */
         .video-overlay {
             position: fixed;
             top: 0;
@@ -42,10 +42,10 @@
 
         .dark .video-overlay {
             background-color: rgba(0, 0, 0, 0.6);
-            /* Un poco más oscuro en modo noche */
+            /* Más oscuro en modo noche */
         }
 
-        /* La sombra con efecto de elevación al pasar el ratón */
+        /* Sombra con elevación al pasar el ratón */
         .card-shadow-hover:hover {
             box-shadow: 0 15px 30px -10px rgba(234, 88, 12, 0.2);
             transform: translateY(-2px);
@@ -53,20 +53,20 @@
     </style>
 </head>
 
-{{-- Aplicamos la fuente Instrument Sans globalmente al body, y ajustamos padding --}}
+{{-- Fuente global y padding --}}
 
 <body class="font-['Instrument_Sans'] text-[#1b1b18] dark:text-[#EDEDEC] flex p-6 lg:p-12 items-center lg:justify-center min-h-screen flex-col">
 
-    <!-- 1. VIDEO DE FONDO (Usando la URL de tu último archivo) --><video playsinline autoplay muted loop class="video-background">
+    <!-- Video de fondo --><video playsinline autoplay muted loop class="video-background">
         <source src="https://assets.mixkit.co/videos/44862/44862-720.mp4" type="video/mp4">
         Tu navegador no soporta el tag de video.
     </video>
 
-    <!-- 2. CAPA DE SUPERPOSICIÓN PARA LEGIBILIDAD -->
+    <!-- Capa de superposición para legibilidad -->
     <div class="video-overlay"></div>
 
-    {{-- Header simple para volver a inicio/registro --}}
-    <header class="w-full lg:max-w-6xl max-w-[335px] text-base mb-6 relative z-10"> {{-- Ajuste el tamaño de texto del header --}}
+    {{-- Header simple --}}
+    <header class="w-full lg:max-w-6xl max-w-[335px] text-base mb-6 relative z-10">
         <nav class="flex items-center justify-end gap-4">
             @if (Route::has('register'))
             <a
@@ -86,10 +86,10 @@
     <div class="flex items-center justify-center w-full lg:grow relative z-10">
         <main class="flex max-w-[335px] w-full flex-col-reverse lg:max-w-4xl lg:flex-row shadow-2xl rounded-lg">
 
-            {{-- PANEL DE LOGIN (Izquierda) --}}
+            {{-- Panel de login --}}
             <div class="flex-1 p-6 pb-12 lg:p-16 bg-white/95 dark:bg-[#161615]/95 dark:text-[#EDEDEC] backdrop-blur-sm shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d] rounded-bl-lg rounded-br-lg lg:rounded-tl-lg lg:rounded-br-none card-shadow-hover transition-all duration-500">
 
-                {{-- Título principal más grande y llamativo --}}
+                {{-- Título principal --}}
                 <h2 class="text-4xl lg:text-5xl font-extrabold text-orange-600 dark:text-amber-400 mb-8 text-center leading-tight">
                     Acceso al <br class="lg:hidden">Taller Digital
                 </h2>

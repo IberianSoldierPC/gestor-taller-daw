@@ -5,7 +5,7 @@
         </h2>
 
         <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-            {{ __('Asegúrate de que tu cuenta esté usando una contraseña fuerte para mantenerse segura.') }}
+            {{ __('Usa una contraseña fuerte para mantener tu cuenta segura.') }}
         </p>
     </header>
 

@@ -16,7 +16,7 @@ class ProjectController extends Controller
     {
         $user = Auth::user();
         $query = Project::with('assignedTo', 'tools');
-        // Filtros por nombre y estado
+        // Filtros: nombre y estado
         if ($search = trim((string) $request->query('q'))) {
             $query->where('name', 'like', '%'.$search.'%');
         }

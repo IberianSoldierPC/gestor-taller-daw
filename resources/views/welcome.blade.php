@@ -14,9 +14,9 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    <!-- Estilos personalizados para el video de fondo y la superposición -->
+    <!-- Estilos para video de fondo y superposición -->
     <style>
-        /* La clase personalizada asegura que el video cubra todo el viewport */
+        /* El video cubre todo el viewport */
         .video-background {
             position: fixed;
             top: 0;
@@ -27,7 +27,7 @@
             z-index: -10;
         }
 
-        /* Superposición para mejorar la legibilidad del texto sobre el video */
+        /* Superposición para mejorar la legibilidad */
         .video-overlay {
             position: fixed;
             top: 0;
@@ -41,7 +41,7 @@
             background-color: rgba(0, 0, 0, 0.6);
         }
         
-        /* Sombra personalizada para las tarjetas */
+        /* Sombra para las tarjetas */
         .card-shadow-hover:hover {
             box-shadow: 0 15px 30px -10px rgba(234, 88, 12, 0.2);
             transform: translateY(-2px);
@@ -49,17 +49,16 @@
     </style>
 </head>
 
-{{-- NOTA: Se removieron las clases de fondo del body ya que el video toma su lugar. --}}
+{{-- Nota: el video hace de fondo --}}
 <body class="font-['Instrument_Sans'] text-[#1b1b18] dark:text-[#EDEDEC] flex p-6 lg:p-12 items-center lg:justify-center min-h-screen flex-col">
     
-    <!-- 1. VIDEO DE FONDO -->
-    {{-- **¡REEMPLAZA LA URL DEL VIDEO (SRC) CON TU VIDEO DE TALLER!** --}}
+    <!-- Video de fondo -->
     <video playsinline autoplay muted loop class="video-background">
         <source src="https://assets.mixkit.co/videos/44862/44862-720.mp4" type="video/mp4">
         Tu navegador no soporta el tag de video.
     </video>
     
-    <!-- 2. CAPA DE SUPERPOSICIÓN PARA LEGIBILIDAD -->
+    <!-- Capa de superposición para legibilidad -->
     <div class="video-overlay"></div>
 
     <header class="w-full lg:max-w-6xl max-w-[335px] text-sm mb-6 not-has-[nav]:hidden relative z-10">
@@ -93,14 +92,13 @@
     <div class="flex items-center justify-center w-full transition-opacity opacity-100 duration-750 lg:grow starting:opacity-0 relative z-10">
         <main class="flex max-w-[335px] w-full flex-col-reverse lg:max-w-6xl lg:flex-row shadow-2xl rounded-lg">
 
-            {{-- CONTENIDO PRINCIPAL ENRIQUECIDO --}}
-            {{-- La tarjeta ahora es semitransparente con backdrop-blur para un look moderno --}}
+            {{-- Contenido principal --}}
             <div class="text-[13px] leading-[20px] flex-1 p-6 pb-12 lg:p-24 bg-white/95 dark:bg-[#161615]/95 dark:text-[#EDEDEC] backdrop-blur-sm shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d] rounded-bl-lg rounded-br-lg lg:rounded-tl-lg lg:rounded-br-none card-shadow-hover transition-all duration-500">
 
                 <div class="mb-8 text-center">
                     <div class="flex items-center mb-2 space-x-3 justify-center">
                         <span class="text-3xl text-orange-600 dark:text-amber-400">
-                            {{-- Icono de herramienta (Ejemplo: Llave inglesa y destornillador) --}}
+                            {{-- Icono de herramienta --}}
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-12">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.336l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437 1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008Z" />
                             </svg>
@@ -114,10 +112,10 @@
                     </p>
                 </div>
 
-                <!-- Separador Estilizado -->
+                <!-- Separador -->
                 <hr class="border-t border-gray-200 dark:border-[#3E3E3A] mb-8">
 
-                <!-- SECCIÓN DE VALOR -->
+                <!-- Sección de valor -->
                 <div class="mb-10 space-y-4">
                     <h2 class="text-xl font-bold text-orange-700 dark:text-amber-400">
                         Centraliza y optimiza tu trabajo
@@ -156,7 +154,7 @@
                     </ul>
                 </div>
 
-                <!-- CTA Destacado -->
+                <!-- CTA principal -->
                 <div class="mt-8 pt-6 border-t border-gray-200 dark:border-[#3E3E3A]">
                     <h3 class="text-xl font-bold mb-6 text-gray-800 dark:text-[#EDEDEC] text-center">
                         ¿Listo para empezar?
@@ -169,11 +167,10 @@
                 </div>
             </div>
 
-            {{-- BLOQUE DE IMAGEN LATERAL (Fondo Stone/Piedra) --}}
-            {{-- También se hace semitransparente --}}
+            {{-- Bloque de imagen lateral --}}
             <div class="w-full lg:w-[438px] lg:shrink-0 lg:ml-0 lg:p-8 flex items-center justify-center aspect-[335/376] lg:aspect-auto p-6 lg:p-0 bg-stone-200/90 dark:bg-[#1D0002]/90 rounded-t-lg lg:rounded-t-none lg:rounded-r-lg backdrop-blur-sm">
                 <div class="text-orange-700 dark:text-amber-300 text-center p-4">
-                    {{-- Icono de inventario (Ejemplo: Caja con flechas) --}}
+                    {{-- Icono de inventario --}}
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-24 h-24 mx-auto mb-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6.633 10.25c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 0 1 2.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 0 0 .322-1.672V2.75a.75.75 0 0 1 .75-.75 2.25 2.25 0 0 1 2.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282m0 0h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 0 1-2.649 7.521c-.388.482-.987.729-1.605.729H13.48c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 0 0-1.423-.23H5.904m10.598-9.75H14.25M5.904 18.5c.083.205.173.405.27.602.197.4-.078.898-.523.898h-.908c-.889 0-1.713-.518-1.972-1.368a12 12 0 0 1-.521-3.507c0-1.553.295-3.036.831-4.398C3.387 9.953 4.167 9.5 5 9.5h1.053c.472 0 .745.556.5.96a8.958 8.958 0 0 0-1.302 4.665c0 1.194.232 2.333.654 3.375Z" />
                     </svg>

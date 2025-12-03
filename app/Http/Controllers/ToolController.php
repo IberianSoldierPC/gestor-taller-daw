@@ -22,7 +22,7 @@ class ToolController extends Controller
 
         $query = Tool::with('user');
 
-        // Filtros: búsqueda por nombre y estado
+        // Filtros: nombre y estado
         if ($search = trim((string) $request->query('q'))) {
             $query->where('name', 'like', '%' . $search . '%');
         }
@@ -31,7 +31,7 @@ class ToolController extends Controller
             $query->where('status', $status);
         }
 
-        // Filtro por usuario asignado (solo visible para admin)
+        // Filtro por usuario asignado (solo admin)
         if ($user->role === 'admin' && ($userId = $request->query('user_id'))) {
             $query->where('user_id', $userId);
         }
@@ -67,7 +67,7 @@ class ToolController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'location' => 'required|string|max:255',
-            // Aceptar todos los estados usados en el sistema/vistas/seeders
+            // Estados permitidos
             'status' => 'required|in:Operativa,Disponible,Averiada,Prestada,En Uso,Mantenimiento,Rota',
             'acquisition_date' => 'required|date',
             'user_id' => 'required|exists:users,id',
@@ -81,7 +81,7 @@ class ToolController extends Controller
 
     public function show(string $id)
     {
-        // No utilizado en este módulo
+        // No utilizado
     }
 
     public function edit(string $id): View
@@ -100,7 +100,7 @@ class ToolController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'location' => 'required|string|max:255',
-            // Aceptar todos los estados usados en el sistema/vistas/seeders
+            // Estados permitidos
             'status' => 'required|in:Operativa,Disponible,Averiada,Prestada,En Uso,Mantenimiento,Rota',
             'acquisition_date' => 'required|date',
             'user_id' => 'required|exists:users,id',

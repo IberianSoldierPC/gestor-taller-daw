@@ -14,12 +14,10 @@
                 </div>
             @endif
 
-            {{-- ---------------------------------------------------- --}}
-            {{-- BLOQUE DE TARJETAS DE ESTADÍSTICAS --}}
-            {{-- ---------------------------------------------------- --}}
+            {{-- Tarjetas de estadísticas --}}
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
 
-                {{-- 1. Tarjeta: Total de Herramientas (Color de acento) --}}
+                {{-- Total de herramientas --}}
                 <div class="bg-white dark:bg-gray-700 p-6 rounded-2xl shadow-xl border-l-4 border-orange-500 dark:border-amber-400 transition hover:shadow-2xl">
                     <p class="text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Total Registradas</p>
                     <p class="text-4xl font-extrabold text-gray-900 dark:text-gray-50 mt-1">
@@ -27,7 +25,7 @@
                     </p>
                 </div>
 
-                {{-- 2. Tarjeta: Disponibles (Éxito) --}}
+                {{-- Disponibles --}}
                 <div class="bg-white dark:bg-gray-700 p-6 rounded-2xl shadow-xl border-l-4 border-green-500 transition hover:shadow-2xl">
                     <p class="text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Disponibles</p>
                     <p class="text-4xl font-extrabold text-gray-900 dark:text-gray-50 mt-1">
@@ -35,7 +33,7 @@
                     </p>
                 </div>
 
-                {{-- 3. Tarjeta: Prestadas / En Uso (Advertencia) --}}
+                {{-- En préstamo --}}
                 <div class="bg-white dark:bg-gray-700 p-6 rounded-2xl shadow-xl border-l-4 border-yellow-500 transition hover:shadow-2xl">
                     <p class="text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">En Préstamo</p>
                     <p class="text-4xl font-extrabold text-gray-900 dark:text-gray-50 mt-1">
@@ -43,7 +41,7 @@
                     </p>
                 </div>
 
-                {{-- 4. Tarjeta: Fuera de Servicio (Crítico) --}}
+                {{-- Fuera de servicio --}}
                 <div class="bg-white dark:bg-gray-700 p-6 rounded-2xl shadow-xl border-l-4 border-red-500 transition hover:shadow-2xl">
                     <p class="text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Fuera de Servicio</p>
                     <p class="text-4xl font-extrabold text-gray-900 dark:text-gray-50 mt-1">
@@ -52,17 +50,15 @@
                 </div>
 
             </div>
-            {{-- ---------------------------------------------------- --}}
-            {{-- FIN BLOQUE DE ESTADÍSTICAS --}}
-            {{-- ---------------------------------------------------- --}}
+            {{-- Fin estadísticas --}}
 
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-2xl">
                 <div class="p-6 text-gray-900 dark:text-gray-200">
 
                     <div class="flex justify-between items-center mb-6 border-b border-gray-200 dark:border-gray-700 pb-4">
-                        <!-- Título con color de acento unificado -->
+                        <!-- Título -->
                         <p class="text-2xl font-extrabold text-orange-600 dark:text-amber-400">Listado de herramientas</p>
-                        <!-- Botón principal con color de acento unificado -->
+                        <!-- Botón principal -->
                         <a href="{{ route('tools.create') }}" class="bg-orange-600 hover:bg-orange-700 dark:bg-amber-500 dark:hover:bg-amber-600 text-white font-bold py-2 px-4 rounded-xl shadow-md transition duration-150 ease-in-out transform hover:scale-105">
                             Añadir nueva herramienta
                         </a>
@@ -111,9 +107,9 @@
                                 </tr>
                             </thead>
                             <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                                {{-- Se utiliza un mapa de colores para evitar el problema de detección dinámica de clases en Tailwind --}}
+                                {{-- Mapa de colores para estados --}}
                                 @php
-                                    // Incluimos las clases en un span oculto para asegurar la compilación
+                                    // Span oculto para asegurar la compilación
                                     echo '<span class="hidden bg-green-100 text-green-800 bg-red-100 text-red-800 bg-yellow-100 text-yellow-800 dark:bg-green-900 dark:text-green-300 dark:bg-red-900 dark:text-red-300 dark:bg-yellow-900 dark:text-yellow-300"></span>';
 
                                     $statusColors = [
@@ -135,19 +131,19 @@
                                     <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-200">{{ $tool->name }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-gray-500 dark:text-gray-400">{{ $tool->location }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        {{-- Badge unificado: px-3 py-1 --}}
+                                        {{-- Badge: px-3 py-1 --}}
                                         <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full {{ $color['bg'] }} {{ $color['text'] }} {{ $color['dark_bg'] }} {{ $color['dark_text'] }}">
                                             {{ $tool->status }}
                                         </span>
                                     </td>
-                                    {{-- Muestra el nombre del usuario asignado o 'N/A' --}}
+                                    {{-- Usuario asignado --}}
                                     <td class="px-6 py-4 whitespace-nowrap text-gray-500 dark:text-gray-400">{{ $tool->user->name ?? 'N/A' }}</td>
 
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium flex space-x-4">
-                                        <!-- Botón Editar con estilo de acento -->
+                                        <!-- Botón Editar -->
                                         <a href="{{ route('tools.edit', $tool->id) }}" class="text-orange-600 dark:text-amber-400 hover:text-orange-800 dark:hover:text-amber-300 font-bold transition duration-150">Editar</a>
 
-                                        <!-- Formulario de Borrado con confirmación simple -->
+                                        <!-- Formulario de borrado -->
                                         <form action="{{ route('tools.destroy', $tool->id) }}" method="POST" class="inline" title="Borrar herramienta">
                                             @csrf
                                             @method('DELETE')
@@ -167,7 +163,7 @@
                         </table>
                     </div>
 
-                    {{-- Paginación: mostrar si el listado está paginado --}}
+                    {{-- Paginación --}}
                     @if (isset($tools) && method_exists($tools, 'hasPages') && $tools->hasPages())
                         <div class="mt-6 p-4 border-t-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 rounded-b-lg">
                             {{ $tools->links() }}
